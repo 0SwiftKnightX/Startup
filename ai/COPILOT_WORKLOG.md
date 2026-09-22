@@ -113,6 +113,24 @@ Active worklog for GitHub Copilot changes in this repository.
 
 - **Signed:** GitHub Copilot
 
+## 2026-09-22 - Android Workflow Audit
+
+- Pulled the two Android setup commits from `origin/main` into the workspace.
+- Confirmed `export_presets.cfg` defines the `Android Quest 3S` ARM64/OpenXR
+  debug preset and that its APK path matches the workflow artifact path.
+- Ran the repository verifier: 9 passed, 0 failed.
+- Ran Godot project import successfully.
+- Local APK export could not run because this container has no Android SDK
+  (`ANDROID_HOME` unset, no `adb`/`sdkmanager`) and no Android export templates.
+- Inspected the GitHub Actions run `35791559587`; it failed before checkout
+  because `barichello/godot-ci:4.7.2-stable` does not exist.
+- Corrected the local workflow to use the published
+  `barichello/godot-ci:4.7.2` tag.
+- The corrected workflow still needs to be committed/pushed, after which GitHub
+  Actions must be rerun and the APK artifact verified.
+- Quest 3S hardware acceptance remains pending.
+- **Signed:** GitHub Copilot
+
 ## Entry Template
 
 ```text

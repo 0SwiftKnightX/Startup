@@ -19,7 +19,7 @@ jobs:
     name: Build Quest 3S Debug APK
     runs-on: ubuntu-24.04
     container:
-      image: barichello/godot-ci:4.7.2-stable
+      image: barichello/godot-ci:4.7.2
 
     steps:
       - name: Checkout
