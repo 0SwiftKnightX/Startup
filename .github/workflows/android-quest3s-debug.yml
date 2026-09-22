@@ -1,0 +1,74 @@
+name: Android Quest 3S Debug APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: "4.7.2-stable"
+  EXPORT_PRESET: "Android Quest 3S"
+  APK_PATH: "build/Startup-Quest3S-debug.apk"
+
+jobs:
+  build-android:
+    name: Build Quest 3S Debug APK
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.2-stable
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Verify Godot and Android toolchain
+        run: |
+          godot --version
+          java -version
+          echo "ANDROID_HOME=${ANDROID_HOME:-unset}"
+          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-unset}"
+          which adb || true
+          adb version
+          which sdkmanager || true
+          sdkmanager --version || true
+
+      - name: Verify Android export preset
+        run: |
+          test -f export_presets.cfg
+          grep -q 'name="Android Quest 3S"' export_presets.cfg
+          grep -q 'platform="Android"' export_presets.cfg
+          grep -q 'architectures/arm64-v8a=true' export_presets.cfg
+          grep -q 'xr_features/xr_mode=1' export_presets.cfg
+
+      - name: Import project
+        run: |
+          godot --headless --path . --editor --quit
+
+      - name: Run project verification
+        run: |
+          python3 tools/verify/run_all.py
+
+      - name: Build debug APK
+        run: |
+          mkdir -p build
+          godot --headless --path . --export-debug "${EXPORT_PRESET}" "${APK_PATH}"
+
+      - name: Verify APK artifact
+        run: |
+          test -s "${APK_PATH}"
+          file "${APK_PATH}"
+          ls -lh "${APK_PATH}"
+
+      - name: Upload downloadable debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Startup-Quest3S-debug
+          path: ${{ env.APK_PATH }}
+          if-no-files-found: error
+          retention-days: 14
