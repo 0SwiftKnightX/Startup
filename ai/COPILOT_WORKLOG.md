@@ -43,6 +43,76 @@ Active worklog for GitHub Copilot changes in this repository.
 - Verified relative Markdown links; no runtime or Quest validation was performed.
 - **Signed:** GitHub Copilot
 
+## 2026-09-22 - First Playable Slice and Verification Expansion
+
+### Completed
+
+- Added the first-slice architecture in `docs/FIRST_SLICE_ARCHITECTURE.md`.
+- Added the prioritized roadmap in `docs/NEXT_IMPLEMENTATION_PLAN.md`.
+- Added granular parent and sub-task acceptance checks in
+  `docs/IMPLEMENTATION_CHECKLIST.md`.
+- Added the from-zero continuation/setup prompt in
+  `ai/STARTUP_FROM_ZERO_SETUP_PROMPT.md`.
+- Added the shared verifier runner and verifier documentation under
+  `tools/verify/`.
+- Added manifest enforcement through `tools/verify/verifier_manifest.json`.
+- Added explicit scene, node, script, input, and XR contract verification.
+- Added a headless Godot runtime test for `HeroState`.
+- Added the `HeroState` flow: lobby, soul selected, soul scanned, transformed,
+  arena, and return to lobby.
+- Added a canonical `XROrigin3D`, `XRCamera3D`, and left/right controller rig.
+- Added XR Tools pointer and pickup components with near and ranged pickup
+  configuration.
+- Converted the soul block to an `XRToolsPickable` rigid body.
+- Connected XR pickup and release signals to the interaction-lab hero flow.
+- Added an explicit scan-station state contract and filtered interaction area.
+- Added named XR movement, turn, grip, trigger, confirm, and cancel actions with
+  desktop keyboard fallbacks.
+- Added the comfort locomotion profile with acceleration, dead zones, and snap
+  turn support.
+- Added the arena target with damage, defeat, and reset behavior.
+- Added visual/runtime fallback reporting when no OpenXR runtime is available.
+
+### Fresh validation evidence
+
+- `python3 tools/verify/run_all.py`
+  - **9 passed, 0 failed**.
+- `./.tools/godot --headless --path . --editor --quit`
+  - Godot 4.7.2 project import passed.
+- `./.tools/godot --headless --path . tools/verify/runtime/hero_state_runtime_test.tscn --quit-after 2`
+  - `RUNTIME_PASS HeroState transitions`.
+- `./.tools/godot --headless --path . scenes/interaction_lab.tscn --quit-after 2`
+  - Interaction lab launched and reported `XR player status: desktop_fallback`.
+
+### Not finished / blocked by environment or scope
+
+- Physical Quest 3S pickup, tracking, latency, comfort, and frame-time
+  acceptance testing has not been performed.
+- The current container has no usable desktop OpenXR runtime; OpenXR reports
+  initialization failure and the project correctly falls back to desktop mode.
+- Android SDK, ADB, Android export preset, and Quest APK deployment workflow
+  still need to be configured.
+- Arm-swing locomotion is not implemented or hardware-validated yet.
+- Visual haptic feedback needs Quest validation.
+- Multiplayer authority/networking is intentionally deferred.
+- Q.U.I.R.K.-inspired sandbox construction and tools are intentionally deferred.
+- Cooperative enemy waves and a full hero/weapon roster are intentionally
+  deferred.
+
+### Next work
+
+1. Configure Android export and a cloud APK build path for phone-mediated Quest
+   deployment.
+2. Validate the XR rig, pickup, scan, and comfort locomotion on a physical Quest
+   3S.
+3. Add optional arm-swing locomotion while preserving thumbstick fallback.
+4. Add transformed hero presentation and a deterministic attack/target runtime
+   test.
+5. Design multiplayer and sandbox systems only after the single-player slice
+   passes Quest acceptance.
+
+- **Signed:** GitHub Copilot
+
 ## Entry Template
 
 ```text
