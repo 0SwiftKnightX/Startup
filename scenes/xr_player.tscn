@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource path="res://scripts/xr_player.gd" type="Script" id="1_player"]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id="2_pickup"]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id="3_pointer"]
+[ext_resource path="res://addons/godot-xr-tools/xr/start_xr.tscn" type="PackedScene" id="4_start"]
+[ext_resource path="res://scripts/comfort_locomotion.gd" type="Script" id="5_locomotion"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_left"]
+size = Vector3(0.12, 0.12, 0.24)
+
+[sub_resource type="BoxMesh" id="BoxMesh_right"]
+size = Vector3(0.12, 0.12, 0.24)
+
+[sub_resource type="Environment" id="Environment_player"]
+background_mode = 1
+background_color = Color(0.035, 0.047, 0.063, 1)
+
+[node name="XRPlayer" type="XROrigin3D"]
+script = ExtResource("1_player")
+
+[node name="ComfortLocomotion" type="Node" parent="."]
+script = ExtResource("5_locomotion")
+
+[node name="XRCamera3D" type="XRCamera3D" parent="."]
+position = Vector3(0, 1.6, 4)
+current = true
+environment = SubResource("Environment_player")
+
+[node name="LeftController" type="XRController3D" parent="."]
+position = Vector3(-0.5, 1.45, 3.5)
+tracker = &"left_hand"
+pose = &"aim"
+
+[node name="Visual" type="MeshInstance3D" parent="LeftController"]
+mesh = SubResource("BoxMesh_left")
+
+[node name="Pickup" parent="LeftController" instance=ExtResource("2_pickup")]
+pickup_axis_action = "xr_left_grip"
+action_button_action = "xr_left_trigger"
+ranged_enable = true
+ranged_distance = 5.0
+
+[node name="Pointer" parent="LeftController" instance=ExtResource("3_pointer")]
+
+[node name="RightController" type="XRController3D" parent="."]
+position = Vector3(0.5, 1.45, 3.5)
+tracker = &"right_hand"
+pose = &"aim"
+
+[node name="Visual" type="MeshInstance3D" parent="RightController"]
+mesh = SubResource("BoxMesh_right")
+
+[node name="Pickup" parent="RightController" instance=ExtResource("2_pickup")]
+pickup_axis_action = "xr_right_grip"
+action_button_action = "xr_right_trigger"
+ranged_enable = true
+ranged_distance = 5.0
+
+[node name="Pointer" parent="RightController" instance=ExtResource("3_pointer")]
+
+[node name="StartXR" parent="." instance=ExtResource("4_start")]

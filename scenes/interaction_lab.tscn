@@ -1,6 +1,29 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource path="res://scripts/interaction_lab.gd" type="Script" id="1_lab"]
+[ext_resource path="res://scripts/hero_state.gd" type="Script" id="2_state"]
+[ext_resource path="res://scenes/xr_player.tscn" type="PackedScene" id="3_player"]
+[ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id="4_pickable"]
+[ext_resource path="res://scripts/scan_station.gd" type="Script" id="5_scan"]
+[ext_resource path="res://scripts/arena_target.gd" type="Script" id="6_target"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(8, 0.1, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape_floor"]
+size = Vector3(8, 0.1, 8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_soul"]
+size = Vector3(0.35, 0.35, 0.35)
+
+[sub_resource type="BoxShape3D" id="BoxShape_soul"]
+size = Vector3(0.35, 0.35, 0.35)
+
+[sub_resource type="BoxMesh" id="BoxMesh_station"]
+size = Vector3(0.8, 0.8, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape_station"]
+size = Vector3(0.8, 0.8, 0.8)
 
 [node name="InteractionLab" type="Node3D"]
 script = ExtResource("1_lab")
@@ -12,15 +35,69 @@ rotation_degrees = Vector3(-45, -25, 0)
 light_energy = 1.2
 shadow_enabled = true
 
-[node name="Camera" type="Camera3D" parent="."]
-position = Vector3(0, 1.6, 4)
-current = true
+[node name="PlayerRig" parent="." instance=ExtResource("3_player")]
 
-[node name="Floor" type="MeshInstance3D" parent="."]
-mesh = null
+[node name="Pointer" type="RayCast3D" parent="."]
+position = Vector3(0, 1.6, 3.5)
+target_position = Vector3(0, 0, -8)
+collision_mask = 4
+enabled = true
+
+[node name="FloorBody" type="StaticBody3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="FloorBody"]
+mesh = SubResource("BoxMesh_floor")
+position = Vector3(0, -0.05, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="FloorBody"]
+shape = SubResource("BoxShape_floor")
+position = Vector3(0, -0.05, 0)
+
+[node name="SoulBlock" type="RigidBody3D" parent="."]
+collision_layer = 4
+collision_mask = 196615
+freeze_mode = 1
+position = Vector3(0, 1.1, -1.5)
+script = ExtResource("4_pickable")
+press_to_hold = true
+ranged_grab_method = 1
+
+[node name="Mesh" type="MeshInstance3D" parent="SoulBlock"]
+mesh = SubResource("BoxMesh_soul")
+
+[node name="Collision" type="CollisionShape3D" parent="SoulBlock"]
+shape = SubResource("BoxShape_soul")
+
+[node name="ScanStation" type="Node3D" parent="."]
+position = Vector3(0, 0.4, -0.8)
+script = ExtResource("5_scan")
+
+[node name="Mesh" type="MeshInstance3D" parent="ScanStation"]
+mesh = SubResource("BoxMesh_station")
+
+[node name="InteractionArea" type="Area3D" parent="ScanStation"]
+collision_layer = 8
+collision_mask = 4
+
+[node name="Collision" type="CollisionShape3D" parent="ScanStation/InteractionArea"]
+shape = SubResource("BoxShape_station")
+
+[node name="HeroState" type="Node" parent="."]
+script = ExtResource("2_state")
+
+[node name="ArenaTarget" type="Node3D" parent="."]
+position = Vector3(1.4, 0.8, -1.8)
+script = ExtResource("6_target")
+
+[node name="Mesh" type="MeshInstance3D" parent="ArenaTarget"]
+mesh = SubResource("BoxMesh_station")
 
 [node name="LabTitle" type="Label" parent="."]
 text = "INTERACTION LAB"
+
+[node name="Status" type="Label" parent="."]
+position = Vector2(20, 60)
+text = "Interaction state pending"
 
 [node name="FeatureNotes" type="Label" parent="."]
 text = "XR Tools mechanics will be composed here:\n- Physics hands and grab/throw interactions\n- Viewport UI and snap turning\n- Gliding, climbing, wind, and low-traction movement\n- Multi-level scene and performance validation"

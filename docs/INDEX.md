@@ -18,6 +18,9 @@ contributors to the right document for deeper work.
 - [Locomotion Profiles](LOCOMOTION_PROFILES.md) - composable movement profiles.
 - [Level Flow](LEVEL_FLOW.md) - scene lifecycle and loading responsibilities.
 - [Asset Pipeline](ASSET_PIPELINE.md) - asset organization and Quest performance rules.
+- [First Slice Architecture](FIRST_SLICE_ARCHITECTURE.md) - input, interaction, update-loop, and verifier contracts for the first playable slice.
+- [Next Implementation Plan](NEXT_IMPLEMENTATION_PLAN.md) - prioritized tasks and acceptance gates for the next milestones.
+- [Implementation Checklist](IMPLEMENTATION_CHECKLIST.md) - granular sub-tasks and evidence gates for each milestone.
 
 ## Documentation Rules
 
