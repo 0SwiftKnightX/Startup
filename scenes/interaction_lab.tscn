@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/interaction_lab.gd" type="Script" id="1_lab"]
+
+[node name="InteractionLab" type="Node3D"]
+script = ExtResource("1_lab")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-45, -25, 0)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="Camera" type="Camera3D" parent="."]
+position = Vector3(0, 1.6, 4)
+current = true
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = null
+
+[node name="LabTitle" type="Label" parent="."]
+text = "INTERACTION LAB"
+
+[node name="FeatureNotes" type="Label" parent="."]
+text = "XR Tools mechanics will be composed here:\n- Physics hands and grab/throw interactions\n- Viewport UI and snap turning\n- Gliding, climbing, wind, and low-traction movement\n- Multi-level scene and performance validation"
