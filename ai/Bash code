@@ -1,0 +1,7 @@
+ git add .github/workflows/android-quest3s-debug.yml ai/COPILOT_WORKLOG.md
+
+git add .github/workflows/android-quest3s-debug.yml ai/COPILOT_WORKLOG.md
+
+git commit -m "Fix Android Quest workflow"
+
+git push origin main
