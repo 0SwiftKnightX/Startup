@@ -40,9 +40,9 @@ performed, known limitations, and the responsible working identity.
 	blueprint, interaction contracts, locomotion profiles, level flow, asset
 	pipeline, README, validation docs, and audit records.
 - **Validation:** Configuration and documentation checks completed; Godot import
-	and runtime checks unavailable because Godot is not installed.
-- **Limitations:** XR Tools and OpenXR addons are not installed; Quest testing
-	has not been performed.
+	and runtime checks unavailable because Godot was not installed at that time.
+- **Limitations:** XR Tools and OpenXR addons were not installed at that time;
+	Quest testing has not been performed.
 - **Signed:** GitHub Copilot
 
 ## 2026-09-22T03:42:08Z - XR Reference Repository Set
@@ -52,7 +52,7 @@ performed, known limitations, and the responsible working identity.
 - **Files:** `README.md`, `docs/PROJECT_BIBLE.md`, `docs/ARCHITECTURE.md`,
 	`docs/AUDIT_ARCHIVE.md`, `CHANGELOG.md`, and AI worklogs.
 - **Validation:** Relative Markdown links checked; runtime validation not run.
-- **Limitations:** Reference repositories are not integrated dependencies yet.
+- **Limitations:** Reference repositories were not integrated dependencies yet.
 - **Signed:** GitHub Copilot
 
 ## Entry Template

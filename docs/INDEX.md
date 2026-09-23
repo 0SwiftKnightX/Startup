@@ -12,7 +12,6 @@ contributors to the right document for deeper work.
 - [Test Plan](TEST_PLAN.md) - Quest 3S test coverage and release gates.
 - [Audit Archive](AUDIT_ARCHIVE.md) - dated audits, findings, and resolutions.
 - [Historical GPT Log](HISTORICAL_GPT_LOG.md) - preserved historical AI/project record.
-- [GPT Worklog](GPT_WORKLOG.md) - current AI-assisted engineering entries.
 - [Integration Blueprint](INTEGRATION_BLUEPRINT.md) - composition plan for the four XR references.
 - [Interaction Contracts](INTERACTION_CONTRACTS.md) - intended shared interaction behavior.
 - [Locomotion Profiles](LOCOMOTION_PROFILES.md) - composable movement profiles.

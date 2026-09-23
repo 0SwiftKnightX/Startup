@@ -1,6 +1,7 @@
 # Verification Framework
 
-This verification system is intentionally built as a reusable gate for the game foundation.
+This verification system is the reusable gate for the current first playable
+slice and every future feature added to the project.
 
 ## Purpose
 
@@ -9,7 +10,10 @@ Every feature, controller, and system added to the project must have a verifier 
 ## Structure
 
 - `run_all.py` - master verifier runner
-- `verifiers/` - feature and setup checks
+- `verifier_manifest.json` - required verifier registry
+- `verifiers/` - feature, setup, scene, XR, and arena checks
+- `runtime/` - headless Godot behavior tests
+- `README.md` files in child folders - local tool ownership and usage notes
 - each verifier class must subclass `BaseVerifier`
 - new system or feature check should be added as a new file in `verifiers/`
 
@@ -26,10 +30,15 @@ When the runner executes:
 
 ## Current first-slice verifiers
 
-- Setup controller verifier
-- Main menu feature verifier
-- Interaction lab feature verifier
-- XR runtime verifier
+- Setup controller
+- Main menu
+- Interaction lab
+- Hero flow
+- Hero state runtime
+- Project contracts
+- XR player
+- XR runtime
+- Arena target
 
 These are the baseline checks for the first playable slice.
 
@@ -41,4 +50,7 @@ python3 tools/verify/run_all.py
 
 ## Future rule
 
-When a new feature or system is implemented, add a new verifier module in `tools/verify/verifiers/` and the main runner will automatically include it.
+When a new feature or system is implemented, add a new verifier module in
+`tools/verify/verifiers/`, register its class in
+`verifier_manifest.json`, and add a runtime test under `runtime/` when static
+inspection cannot prove behavior.

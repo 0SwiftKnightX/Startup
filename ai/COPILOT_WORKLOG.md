@@ -131,6 +131,21 @@ Active worklog for GitHub Copilot changes in this repository.
 - Quest 3S hardware acceptance remains pending.
 - **Signed:** GitHub Copilot
 
+## 2026-09-22 - Repository Documentation Organization
+
+- Moved the active GPT worklog from `docs/GPT_WORKLOG.md` to
+  `ai/GPT_WORKLOG.md` so agent worklogs follow `ai/AI_RULES.md`.
+- Updated root and AI documentation links for the corrected worklog location.
+- Added folder guides for `.github/`, `addons/`, `build/`, `scenes/`,
+  `scripts/`, `tools/`, `tools/verify/runtime/`, and
+  `tools/verify/verifiers/`.
+- Updated the root README and verification README to describe the current
+  first-slice systems, Android workflow, and verifier inventory.
+- **Validation:** stale worklog references checked; 9 project verifiers passed;
+  Godot headless import passed.
+- **Limitations:** Quest hardware and cloud APK execution remain unvalidated.
+- **Signed:** GitHub Copilot
+
 ## Entry Template
 
 ```text

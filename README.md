@@ -5,9 +5,9 @@ polished experiences for Meta Quest headsets.
 
 ## Project Status
 
-Early development. The repository now contains a minimal Godot foundation with
-boot, menu, and interaction-lab scenes. XR plugin integration and device
-validation are still pending.
+Early development. The repository now contains a verified first-slice
+foundation with boot, menu, interaction-lab, XR rig, pickup, scan, hero-state,
+and arena-target systems. Physical device validation is still pending.
 
 ## Target Platform
 
@@ -65,7 +65,7 @@ and [Architecture](docs/ARCHITECTURE.md) for the adopted direction.
 - [Test Plan](docs/TEST_PLAN.md) - desktop and Quest 3S test gates.
 - [Audit Archive](docs/AUDIT_ARCHIVE.md) - dated findings and decisions.
 - [Historical GPT Log](docs/HISTORICAL_GPT_LOG.md) - preserved historical record.
-- [GPT Worklog](docs/GPT_WORKLOG.md) - active AI-assisted engineering log.
+- [GPT Worklog](ai/GPT_WORKLOG.md) - GPT-assisted engineering log.
 - [Integration Blueprint](docs/INTEGRATION_BLUEPRINT.md) - how the four reference repositories combine.
 - [Interaction Contracts](docs/INTERACTION_CONTRACTS.md) - grab, UI, hands, and snap-turn behavior.
 - [Locomotion Profiles](docs/LOCOMOTION_PROFILES.md) - movement feature boundaries.
@@ -80,10 +80,11 @@ Regulations](ai/AI_RULES.md) and must distinguish verified evidence from plans.
 
 ## Development Setup
 
-The foundation can be opened in Godot 4.7.2 and starts with a desktop menu and
-interaction-lab placeholder. Install compatible XR dependencies before enabling
-OpenXR or Quest deployment. Start with the [Integration Blueprint](docs/INTEGRATION_BLUEPRINT.md),
-then follow the [Test Plan](docs/TEST_PLAN.md) and [Validation](docs/VALIDATION.md).
+The project opens in Godot 4.7.2 and includes an Android Quest 3S export preset
+plus a GitHub Actions debug APK workflow. Run the local verifier and Godot import
+checks before deployment. Start with the [Integration Blueprint](docs/INTEGRATION_BLUEPRINT.md),
+then follow the [Implementation Checklist](docs/IMPLEMENTATION_CHECKLIST.md),
+[Test Plan](docs/TEST_PLAN.md), and [Validation](docs/VALIDATION.md).
 
 Physical Quest testing is required for tracking, performance, passthrough,
 comfort, and controller behavior. PCVR preview and headless checks do not replace
