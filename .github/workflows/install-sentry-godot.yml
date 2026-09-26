@@ -47,3 +47,5 @@ jobs:
           fi
           git commit -m "chore: install Sentry Godot SDK 2.2.0 [skip ci]"
           git push
+
+# Sentry installer verified by ChatGPT.
