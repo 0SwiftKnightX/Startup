@@ -21,18 +21,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          VERSION="2.2.0"
-          URL="https://github.com/getsentry/sentry-godot/releases/download/${VERSION}/sentry-godot-${VERSION}%2B407729a.zip"
+          VERSION="2.1.1"
+          URL="https://github.com/getsentry/sentry-godot/releases/download/2.1.1/sentry-godot-2.1.1%2Bd288ad9.zip"
           rm -rf /tmp/sentry-godot
           mkdir -p /tmp/sentry-godot
-          curl -fsSL "${URL}" -o /tmp/sentry-godot/sentry.zip
+          curl -fsSL "$URL" -o /tmp/sentry-godot/sentry.zip
           unzip -q /tmp/sentry-godot/sentry.zip -d /tmp/sentry-godot/extracted
           PLUGIN_CFG="$(find /tmp/sentry-godot/extracted -type f -path '*/addons/sentry/plugin.cfg' -print -quit)"
-          test -n "${PLUGIN_CFG}"
-          PLUGIN_DIR="$(dirname "${PLUGIN_CFG}")"
+          test -n "$PLUGIN_CFG"
+          PLUGIN_DIR="$(dirname "$PLUGIN_CFG")"
           rm -rf addons/sentry
           mkdir -p addons
-          cp -a "${PLUGIN_DIR}" addons/sentry
+          cp -a "$PLUGIN_DIR" addons/sentry
 
       - name: Commit installed SDK
         shell: bash
@@ -45,7 +45,7 @@ jobs:
             echo "Sentry SDK already installed."
             exit 0
           fi
-          git commit -m "chore: install Sentry Godot SDK 2.2.0 [skip ci]"
+          git commit -m "chore: install Sentry Godot SDK 2.1.1 [skip ci]"
           git push
 
 # Sentry installer verified by ChatGPT.
