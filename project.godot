@@ -20,7 +20,7 @@ XRToolsUserSettings="*res://addons/godot-xr-tools/user_settings/user_settings.gd
 XRToolsRumbleManager="*res://addons/godot-xr-tools/rumble/rumble_manager.gd"
 
 [editor_plugins]
-enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg", "res://addons/sentry/plugin.cfg")
 
 [input]
 menu_confirm={
@@ -126,3 +126,6 @@ hand_tracking=true
 
 [physics]
 common/enable_pause_aware_picking=true
+
+[sentry]
+options/dsn="https://1e4068793802934c1148bda528f524dc@o4512151214555136.ingest.us.sentry.io/4512151275831296"
