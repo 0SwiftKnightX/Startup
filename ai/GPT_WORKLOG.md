@@ -55,6 +55,14 @@ performed, known limitations, and the responsible working identity.
 - **Limitations:** Reference repositories were not integrated dependencies yet.
 - **Signed:** GitHub Copilot
 
+## 2026-09-26 - Sentry production instrumentation target
+
+- **Scope:** Pointed the existing Godot Sentry integration at the supplied Startup production Sentry project DSN. The existing SDK/logging configuration was preserved; the Godot Sentry base initialization provides tracing.
+- **Files:** `project.godot`.
+- **Validation:** Confirmed the repository is `0SwiftKnightX/Startup`, the project already contains the Sentry Godot SDK and Sentry configuration, and the DSN was updated to the supplied value.
+- **Limitations:** This environment does not have an authenticated Sentry MCP connection, so arrival of a live event in Sentry could not be independently confirmed here. No separate in-game AI/LLM runtime was found in the inspected project files, so AI conversation spans were not fabricated.
+- **Signed:** ChatGPT
+
 ## Entry Template
 
 ```text
