@@ -128,7 +128,7 @@ hand_tracking=true
 common/enable_pause_aware_picking=true
 
 [sentry]
-options/dsn="https://1e4068793802934c1148bda528f524dc@o4512151214555136.ingest.us.sentry.io/4512151275831296"
+options/dsn="https://f53a9e4b774bb74727d0c2e3031df051@o4512151214555136.ingest.us.sentry.io/4512151373021184"
 options/enable_logs=true
 options/godot_logger/enabled=true
 options/godot_logger/include_source_context=true
