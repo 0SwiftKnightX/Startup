@@ -1,0 +1,979 @@
+XR GAME / SYSTEM DESIGN — CONSOLIDATED CHAT RECORD
+====================================================
+
+Document purpose
+----------------
+This text file consolidates the technical ideas, requirements, constraints, architecture decisions, verification rules, tooling strategy, and development direction discussed for the user's XR/game-development work. It is intended to be a durable project-context record rather than a claim that every prior chat message is available verbatim.
+
+SOURCE / GOVERNANCE
+-------------------
+Primary XR foundation repository:
+- 0SwiftKnightX/XrGpt
+
+Startup repository:
+- 0SwiftKnightX/Startup
+
+ProjectMythos is a separate project and must not be modified for XrGpt work unless explicitly requested.
+
+The project README / project Bible is the authoritative continuity record. Agents should read the relevant README and project documentation before editing. Work should be recorded with date/time, agent name, and role when appropriate. AI must not claim work is complete without evidence.
+
+USER ROLE / OPERATING MODEL
+---------------------------
+The Product Owner is the final "go button" operator. Agents are specialists with explicit roles and scoped authority. The preferred workflow is:
+- one clear task at a time;
+- no silent scope expansion;
+- no unrelated repository changes;
+- read current state before editing;
+- verify after editing;
+- report exact files, commands, results, failures, and limitations;
+- hand off dependencies explicitly.
+
+The user strongly prefers practical, beginner-friendly instructions and real working functionality over architecture that merely loads.
+
+TARGET HARDWARE / DEVELOPMENT CONSTRAINTS
+-----------------------------------------
+Primary target:
+- Meta Quest 3S
+- Android/OpenXR
+- Godot 4.x
+- Godot XR Tools
+- OpenXR Vendors
+
+The Quest is the actual XR target. An Android phone is useful for downloading/sideloading APKs and testing non-XR behavior, but a phone cannot prove Quest OpenXR tracking, controller behavior, comfort, latency, or performance.
+
+The user has limited PC resources and prefers not to depend on a PC/headset-PC workflow. Cloud/browser development and GitHub Actions are preferred where possible. Termux is explicitly excluded from the autonomous development architecture.
+
+The project must distinguish:
+- static/Python verification;
+- headless Godot verification;
+- Android phone smoke testing;
+- optional desktop OpenXR preview;
+- physical Quest 3S validation.
+
+Only physical Quest validation proves Quest-specific XR behavior.
+
+CORE GAME / WORLD DIRECTION
+---------------------------
+The broader game is a persistent XR world/system where players can:
+- create vehicles;
+- create environments;
+- explore;
+- gather resources;
+- encounter creatures;
+- build and use workshops;
+- maintain persistent systems;
+- create and manipulate structures;
+- save, load, rebuild, and summon creations.
+
+The vehicle-builder is a foundational system, not a secondary creator mode.
+
+The desired player loop is:
+1. Enter a build area.
+2. Open a real player-facing catalog.
+3. Select a construction piece.
+4. Place it.
+5. Rotate and align it.
+6. Snap it deterministically.
+7. Continue assembling.
+8. Add functional parts such as wheels, helm/control station, engine, propeller or other propulsion.
+9. Save the result as a blueprint.
+10. Load/edit/rebuild the blueprint.
+11. Summon the completed vehicle into the world.
+12. Operate the physical vehicle.
+
+CONSTRUCTION SYSTEM
+-------------------
+There are three intentional construction scales:
+- 0.001 m³
+- 0.1 m³
+- 1 m³
+
+These are named/discrete construction scales exactly as defined by the Product Owner. They must not be silently reinterpreted as ordinary cube-volume measurements.
+
+A critical architectural distinction:
+- construction envelope = spatial contract;
+- actual mesh/geometry = geometry contained inside the envelope.
+
+A block may contain arbitrary geometry inside its envelope, including actual automobile body-surface geometry such as:
+- hood;
+- fender;
+- body panels;
+- curved exterior surfaces.
+
+A whole vehicle body should be breakable into construction pieces and reassembled in different configurations.
+
+BLOCK SHAPES
+------------
+Each scale should eventually support a broad catalog of standardized forms inspired by the breadth of construction-piece catalogs, without requiring copied assets.
+
+Required/desired families include:
+- slopes;
+- convex pieces;
+- concave pieces;
+- sphere/rounded forms;
+- diamond forms;
+- prism / eight-sided prism-like forms;
+- "chestahedron" (retain this user-defined term rather than silently replacing it);
+- rectangles;
+- half pieces;
+- quarter pieces;
+- elbows/connectors;
+- vehicle-specific body pieces.
+
+The system must allow half and quarter pieces to stack and align predictably with larger and smaller pieces.
+
+OCCUPANCY / TOPOLOGY
+--------------------
+Occupancy is explicit and deterministic. A shape may occupy only selected regions inside its construction envelope.
+
+Conceptual example:
+  [occupied][occupied][occupied]
+  [occupied]          [occupied]
+
+The block definition should support:
+- occupied_cells;
+- construction scale;
+- envelope dimensions;
+- attachment faces/points;
+- allowed rotations;
+- collision representation;
+- compatibility rules;
+- physics metadata;
+- mesh/geometry reference.
+
+A construction envelope can also serve as a blueprint-scale authoring space in which terrain, meshes, textures, and other geometry are authored.
+
+PLAYER-FACING CATALOG
+---------------------
+A construction system without a menu/catalog is not useful to the player.
+
+The catalog should expose:
+- size selector: [0.001] [0.1] [1.0];
+- categories such as basic, angular, curved, connectors, vehicle;
+- shape thumbnails;
+- 3D preview where practical;
+- place/add action;
+- player-created pieces.
+
+The CREATE BLOCK flow should support:
+1. choose envelope/scale;
+2. author or modify geometry;
+3. define occupied cells;
+4. define attachment faces;
+5. preview;
+6. test;
+7. save to catalog.
+
+MY BLOCKS should expose player-created/custom pieces.
+
+Built-in procedural shapes should be generated first so the system is not blocked by external asset hunting.
+
+ASSET / KNOWLEDGE BASE
+----------------------
+Proposed asset folders:
+- /assets/vehicles
+- /assets/blocks
+- /assets/characters
+- /assets/environment
+- /assets/weapons
+- /assets/props
+
+Proposed project knowledge:
+- /project_knowledge/asset_catalog.json
+- /project_knowledge/dimensions.json
+- /project_knowledge/materials.json
+- /project_knowledge/attachment_rules.json
+- /project_knowledge/naming_rules.json
+- /project_knowledge/environment_rules.json
+- /project_knowledge/generation_history.md
+
+The knowledge base should make assets:
+- discoverable;
+- dimensionally consistent;
+- attachable;
+- traceable;
+- understandable by both human and AI workflows.
+
+BLUEPRINT SYSTEM
+----------------
+Blueprints must preserve construction intent, not merely a flattened final mesh.
+
+Conceptual blueprint fields:
+- blueprint ID/name;
+- block/part instances;
+- block definition IDs;
+- construction scale;
+- grid/envelope position;
+- rotation/orientation;
+- occupied-cell pattern;
+- attachment relationships;
+- custom geometry references;
+- material references;
+- functional component metadata;
+- physics metadata;
+- version/schema.
+
+This permits:
+- rebuilding;
+- editing;
+- validation;
+- migration;
+- deterministic reconstruction;
+- AI inspection and manipulation.
+
+VEHICLE PHYSICS
+---------------
+Assembled vehicles should become physical objects rather than decorative meshes.
+
+Aggregate vehicle physics should account for:
+- component/block mass;
+- center of mass;
+- collision representation;
+- inertia;
+- angular behavior;
+- wheels;
+- suspension;
+- tire/contact friction;
+- motor/engine force;
+- steering;
+- angular velocity;
+- propellers;
+- other propulsion mechanisms;
+- helm/control station.
+
+Block definitions may carry:
+- mass;
+- material;
+- collision;
+- physics metadata.
+
+The assembled vehicle derives aggregate physical properties from its components.
+
+VR PLAYER / AVATAR FOUNDATION
+-----------------------------
+The avatar is a physical gameplay system, not merely a visual model.
+
+The foundation needs:
+- HMD/head tracking;
+- torso/body representation;
+- head/body collision;
+- mass;
+- gravity;
+- velocity;
+- ground detection;
+- friction/contact;
+- physical hands;
+- controller targets;
+- stable gameplay inertia.
+
+Two systems must remain distinct:
+
+1. Tracking / IK skeleton
+   - visual/anatomical pose;
+   - head, torso, shoulders, arms, elbows, forearms, hands;
+   - future hips, knees, feet, full-body IK.
+
+2. Physical player body
+   - collision;
+   - mass;
+   - gravity;
+   - velocity;
+   - physical interaction.
+
+Scientific human density is not required. Consistent gameplay mass and inertia are required.
+
+SHOULDER / ELBOW / CONTROLLER IK
+---------------------------------
+The arm system identified in discussion with Ash and Oleg is a core avatar-foundation system.
+
+Desired chain:
+HMD
+ -> Head
+ -> Neck
+ -> Chest/Torso
+ -> Shoulder
+ -> Upper Arm
+ -> Elbow
+ -> Forearm
+ -> Hand
+ -> Controller
+
+The controller provides a hand target. It must not simply replace or rigidly parent the entire arm.
+
+Shoulders should be estimated from:
+- headset position;
+- torso position;
+- avatar proportions;
+- calibration.
+
+Elbow solving requires:
+- elbow pole / preferred bend direction;
+- upper-arm length;
+- forearm length;
+- joint limits;
+- shoulder constraints;
+- collision/avoidance;
+- smoothing;
+- stability against sudden elbow flips.
+
+Required result:
+- shoulders appear anatomically mounted;
+- elbows bend in a controlled direction;
+- elbows do not collapse into the torso;
+- arms do not visibly clip through the avatar;
+- hands track controller targets;
+- arms move naturally around the character.
+
+The arm system is important for:
+- grabbing vehicle parts;
+- pulling/climbing;
+- pushing;
+- reaching;
+- entering vehicles;
+- sitting;
+- operating controls;
+- leaning around obstacles;
+- physical environmental interaction.
+
+FULL-BODY EXTENSION
+-------------------
+The architecture should permit later full-body IK with:
+- hips/pelvis;
+- knees;
+- feet;
+- torso lean;
+- sitting/crouching;
+- reaching;
+- climbing;
+- vehicle seating;
+- leaning around obstacles.
+
+TRACKING AND PHYSICAL LOCOMOTION
+-------------------------------
+Physical hand interaction may support:
+- pulling on walls;
+- pushing off surfaces;
+- climbing;
+- launching/jumping;
+- stabilizing;
+- interacting with vehicles/environment.
+
+Gravity is part of the simulation.
+
+The design should keep physical body behavior separate from visible IK pose.
+
+INVENTORY / HERO MODULE
+-----------------------
+The broader UI includes a wrist-mounted holographic "Hero Module" / Pip-Boy-like tablet/watch.
+
+Interaction concept:
+- wrist;
+- project/open module;
+- grab;
+- release.
+
+Required controls/features:
+- Close;
+- Minimize;
+- Expand;
+- Follow;
+- Pin;
+- Eye/visibility;
+- expanded inventory capacity;
+- small/large icon setting;
+- grab points around edges/corners.
+
+Expand should provide more inventory space, not simply enlarge icons.
+
+Equipment slots:
+- head;
+- shoulders;
+- back;
+- arms;
+- chest;
+- waist;
+- legs;
+- feet;
+- hands;
+- up to 10 accessories, starting with 1.
+
+Automatic acquisition:
+- materials;
+- currency;
+- XP.
+
+Special/boss items can use a red-lock HUD state for relinquishment rules.
+
+Multiplayer ownership can ghost non-owner equipment to other players.
+
+Digi-Cubes and digitizer tiers:
+- tiers 1/5;
+- level caps 25/100;
+- rarity classes including rare, legendary, mythic, and special.
+
+XR INPUT / UI CONVENTIONS
+-------------------------
+Input should use named actions rather than scattering raw device checks through gameplay code.
+
+Quest controls include:
+- left thumbstick;
+- right thumbstick;
+- left/right trigger;
+- left/right grip;
+- A/B/X/Y;
+- controller poses.
+
+The project may use keyboard fallbacks for development, but keyboard fallback does not replace Quest testing.
+
+Previously noted Quest editor preference:
+Settings -> Advanced -> Interface/Touchscreen
+- Long Press as Right Click
+- Haptic Long Press
+
+MENU / CONTROLLER CONVENTIONS
+-----------------------------
+The UI has used a left-side menu / three-bar control for opening the menu/watch. Trigger behavior may be equivalent across left/right contexts where appropriate.
+
+Ray pointer should use the default pointer color initially, with future settings/items allowing color changes.
+
+PROCEDURAL MESH / CONTENT GENERATION
+------------------------------------
+The system should be capable of generating:
+- procedural meshes;
+- block definitions;
+- occupancy patterns;
+- snap/attachment rules;
+- vehicle-body geometry;
+- blueprint data;
+- initial simple geometry without requiring external asset sources.
+
+External assets can later enrich the catalog.
+
+VERIFICATION PHILOSOPHY
+------------------------
+The user has repeatedly emphasized that AI-generated code can load while still failing functionally.
+
+Therefore validation must cover:
+- file health;
+- scripts/resources parsing;
+- scenes loading;
+- runtime startup;
+- XR connection;
+- tracking;
+- interaction;
+- IK behavior;
+- shoulder/elbow/hand alignment;
+- clipping prevention;
+- catalog opening;
+- piece selection;
+- placement;
+- rotation;
+- deterministic snapping;
+- save/load;
+- rebuild;
+- vehicle physics.
+
+Do not invent successful validation.
+
+Preferred verification:
+- read-only audits;
+- file-health checks;
+- static contract verification;
+- headless Godot checks;
+- focused runtime checks;
+- real Quest validation.
+
+The user previously rejected a workflow centered on intentionally failing tests/GUT. Tests should prove real contracts rather than exist merely to create failures.
+
+STARTUP REPOSITORY FIRST-SLICE CONTEXT
+--------------------------------------
+The current Startup project documentation describes a Quest 3S-first Godot XR foundation.
+
+The current Startup first playable slice is intentionally narrower than the entire world vision:
+1. boot main menu;
+2. enter one interaction lab;
+3. use one canonical XR origin;
+4. track headset and both controllers;
+5. aim pointer/raycast at target;
+6. grab a soul object with Grip;
+7. use Trigger while holding it;
+8. scan at a station;
+9. transform into one hero state;
+10. enter a simple arena;
+11. attack one target dummy;
+12. return to menu without stale state.
+
+Do not add multiplayer, a complete hero roster, construction tools, enemy waves, or a full content system until this slice is proven.
+
+The current Startup project documentation identifies:
+- project.godot;
+- scenes/main.tscn;
+- scenes/interaction_lab.tscn;
+- scenes/xr_player.tscn;
+- scripts/main.gd;
+- scripts/interaction_lab.gd;
+- scripts/hero_state.gd;
+- scripts/scan_station.gd;
+- scripts/arena_target.gd;
+- scripts/xr_player.gd;
+- scripts/comfort_locomotion.gd;
+- addons/godot-xr-tools/;
+- tools/verify/run_all.py;
+- tools/verify/verifier_manifest.json;
+- tools/verify/verifiers/;
+- tools/verify/runtime/;
+- docs/FIRST_SLICE_ARCHITECTURE.md;
+- docs/NEXT_IMPLEMENTATION_PLAN.md;
+- docs/IMPLEMENTATION_CHECKLIST.md.
+
+Every new feature should have an appropriate verifier and, where practical, a headless Godot runtime test.
+
+Known verification commands documented by Startup include:
+python3 tools/verify/run_all.py
+./.tools/godot --headless --path . --editor --quit
+./.tools/godot --headless --path . --quit-after 2
+./.tools/godot --headless --path . scenes/interaction_lab.tscn --quit-after 2
+
+A static/headless pass is never a substitute for Quest acceptance.
+
+STARTUP DEVELOPMENT PATH
+------------------------
+Cloud/browser workflow:
+1. edit in cloud workspace;
+2. use Godot/export templates in the build environment;
+3. configure Android export;
+4. configure Android SDK/ADB for cloud build or GitHub Actions;
+5. build debug APK;
+6. download APK to Android phone;
+7. enable Quest Developer Mode;
+8. approve Quest USB debugging;
+9. sideload;
+10. test physically on Quest 3S.
+
+Android phone tests may prove installation, menu loading, and fallback behavior. Quest proves XR.
+
+WORK SEQUENCE
+-------------
+For each implementation task:
+1. inspect files and git status;
+2. state one local hypothesis and one cheap check;
+3. implement one narrow feature;
+4. add/update its verifier;
+5. run focused validation;
+6. fix local failures;
+7. run aggregate verification;
+8. run Godot import and relevant scene smoke test;
+9. record evidence;
+10. update implementation checklist;
+11. only mark a parent task complete after all child tasks and evidence gates pass.
+
+AUTONOMOUS AI DEVELOPMENT LOOP
+------------------------------
+The long-term goal is an autonomous development system that can continue without a personal computer running 24/7.
+
+Desired loop:
+YOU
+ -> PROJECT BIBLE
+ -> AI WORK QUEUE
+ -> GitHub Actions
+ -> AI/TOOL WORKER
+ -> verification
+ -> project-state update
+ -> dependency resolution
+ -> next authorized task
+ -> continue or notify human
+
+Important constraints:
+- GitHub Actions can orchestrate jobs.
+- A normal free web chat UI is not automatically a callable API.
+- AI inference requires an actual callable provider/API/agent/action.
+- Free quotas and terms vary.
+- Browser automation must not be assumed to be a reliable or permitted substitute for an API.
+- Termux is not part of this architecture.
+
+Machine-readable project state should include concepts such as:
+- PROJECT_BIBLE.md;
+- PROJECT_STATE.json;
+- task queue;
+- dependency graph;
+- workflow definitions;
+- validation reports;
+- handoff records.
+
+Suggested task state machine:
+READY -> CLAIMED -> WORKING -> VERIFYING -> PASSED -> NEXT_TASK
+
+Failure paths:
+BLOCKED -> HUMAN_REQUIRED
+FAILED -> RETRY or ESCALATE
+
+The worker must:
+- read state before editing;
+- claim one authorized task;
+- obey forbidden-change boundaries;
+- avoid silent scope expansion;
+- verify;
+- record actual results;
+- record failures;
+- create explicit handoffs;
+- stop when human intervention is required.
+
+TOOL / AGENT ECOSYSTEM REQUESTED BY PRODUCT OWNER
+--------------------------------------------------
+The following tools/services were explicitly identified as part of the desired development ecosystem:
+
+Source control / memory / project coordination:
+- @GitHub
+- @Engram
+- @Cortex — Semantic Memory
+- @Stele
+
+Research / web:
+- @Exa
+- @Firecrawl
+
+XR / engine:
+- @Godot
+- @OpenXR
+- @Meta Quest
+- @OpenXR Vendors
+
+Design / media:
+- @Figma
+- @MagicPath
+- @Magic Patterns
+- @Lumen UI
+- @Canva
+- @Cloudinary
+- @Higgsfield
+- @Runway
+
+Development infrastructure / planning:
+- @Sprites
+- @Dependency Upgrade Plan
+
+Backend / deployment / APIs:
+- @Supabase
+- @Vercel
+- @YepCode
+- @3Min API
+
+Hosted agents:
+- @Outside Agent
+- @Botpress
+
+Cloud infrastructure:
+- @Railway
+- @Render
+
+App/site builders:
+- @Base44
+- @Buildy
+- @Floot
+- @Replit
+- @ShipStatic
+- @Web on Demand Website Builder
+- @zyberspace
+
+Website / business / research:
+- @Grow My Website
+- @Spaceship
+- @Windsor.ai
+- @Soracom Knowledge
+
+Specialized systems:
+- @FluxBuilder
+- @Pathors
+- @CrowdStrike Falcon Fusion
+- @BasicDeploy
+
+PREFERRED TOOL HIERARCHY
+------------------------
+The preferred responsibility hierarchy is:
+- @GitHub = source of truth;
+- @Exa = research;
+- @Firecrawl = documentation/live-web extraction;
+- @Stele = decisions/project memory;
+- @Visualize = architecture visualization;
+- @Figma = design;
+- @Lumen UI = design-system/interface implementation;
+- @Build 3D Game Rooms = prototyping;
+- @GitHub Actions = validation/build automation.
+
+This hierarchy is intended to prevent agents from using the wrong system for a task.
+
+PROJECT BOUNDARIES
+------------------
+The user does not want unrelated projects changed merely because an agent sees an opportunity.
+
+Particularly:
+- XrGpt work stays in XrGpt.
+- Startup work stays in Startup.
+- ProjectMythos is not a substitute for XrGpt.
+- A requested narrow change should remain narrow.
+- Existing user work must not be overwritten without authorization.
+
+BROADER PRODUCT VISION
+----------------------
+The final system is intended to become more than a simple VR demo.
+
+It should support:
+- player-created vehicles;
+- player-created blocks;
+- custom geometry;
+- environmental construction;
+- resource gathering;
+- creatures;
+- workshops;
+- persistent world systems;
+- physical vehicles;
+- physical avatars;
+- full-body interaction;
+- inventory/equipment;
+- AI-assisted content generation;
+- blueprints;
+- deterministic rebuilding;
+- multiplayer ownership rules later;
+- autonomous engineering workflows.
+
+The vehicle builder is a particularly important proof point because it combines:
+- construction;
+- geometry;
+- snapping;
+- physics;
+- blueprints;
+- catalog/UI;
+- player interaction;
+- AI-readable structured data.
+
+DEFINITION OF "WORKING"
+-----------------------
+A feature is not considered working merely because:
+- a script parses;
+- a scene opens;
+- an APK installs;
+- a desktop preview launches.
+
+A meaningful feature must pass the relevant acceptance level.
+
+For XR features this includes:
+- physical Quest startup;
+- correct headset/controller tracking;
+- correct input;
+- stable interaction;
+- visible and physical behavior matching intent;
+- no obvious clipping or IK failure;
+- acceptable performance/comfort;
+- evidence recorded.
+
+For the vehicle builder this includes:
+- catalog opens;
+- piece can be selected;
+- piece appears in placement mode;
+- placement is deterministic;
+- rotation works;
+- snapping works;
+- occupancy is respected;
+- geometry remains inside its envelope;
+- parts connect according to attachment rules;
+- blueprint saves;
+- blueprint loads;
+- vehicle reconstructs;
+- physical behavior is correct enough for the intended component.
+
+ARCHITECTURAL PRINCIPLES
+------------------------
+1. Build the physical interaction foundation before decorative expansion.
+2. Separate spatial contracts from meshes.
+3. Preserve construction intent in structured data.
+4. Keep visual IK separate from physical collision.
+5. Treat controller poses as tracking inputs, not entire-arm replacements.
+6. Make shoulders and elbows solve anatomically and predictably.
+7. Keep block occupancy explicit.
+8. Make snapping deterministic.
+9. Generate a useful procedural catalog before depending on external assets.
+10. Make all important systems machine-readable for AI agents.
+11. Verify behavior rather than only syntax.
+12. Never claim Quest validation from non-Quest evidence.
+13. Keep project boundaries strict.
+14. Derive autonomous work from explicit tasks and dependencies rather than freeform AI guessing.
+15. Stop and escalate when a human decision or physical validation is required.
+
+SYSTEM MAP
+---------
+PLAYER
+  HMD + controllers
+        |
+        v
+  Tracking / Pose
+        |
+        +--> Upper-body IK
+        |      shoulder -> upper arm -> elbow -> forearm -> hand
+        |
+        +--> Physical body
+               collision + mass + gravity + velocity
+        |
+        v
+  Hands / Interaction
+        |
+        +--> Hero Module / Inventory
+        |
+        +--> Construction Builder
+        |      catalog -> placement -> snap -> occupancy
+        |
+        +--> Vehicle Controls
+        |
+        v
+  World / Physics
+        |
+        +--> assembled vehicle
+        +--> environment
+        +--> creatures
+        +--> workshops
+        +--> resources
+        |
+        v
+  Blueprint / Persistent State
+        |
+        v
+  Project Knowledge / AI Workflow
+        |
+        v
+  GitHub + verification + autonomous task loop
+
+CONSOLIDATED IMPLEMENTATION CHECKLIST
+--------------------------------------
+Foundation:
+[ ] Quest 3S physical runtime confirmed
+[ ] canonical XR origin confirmed
+[ ] headset tracking confirmed
+[ ] both controller poses confirmed
+[ ] named input actions confirmed
+[ ] pointer/raycast confirmed
+[ ] physical player body confirmed
+[ ] gravity/grounding confirmed
+[ ] physical hands confirmed
+
+Avatar:
+[ ] shoulder estimation/calibration
+[ ] upper-arm IK
+[ ] elbow pole / preferred bend
+[ ] elbow limits
+[ ] forearm IK
+[ ] hand/controller target
+[ ] torso collision
+[ ] elbow collision avoidance
+[ ] smoothing
+[ ] no visible elbow flipping
+[ ] no obvious arm/torso clipping
+[ ] extension path for full-body IK
+
+Construction:
+[ ] 0.001 scale
+[ ] 0.1 scale
+[ ] 1.0 scale
+[ ] envelope contract
+[ ] arbitrary mesh inside envelope
+[ ] occupancy cells
+[ ] attachment faces
+[ ] deterministic rotations
+[ ] deterministic snapping
+[ ] basic shapes
+[ ] angular shapes
+[ ] curved shapes
+[ ] connectors
+[ ] half pieces
+[ ] quarter pieces
+[ ] vehicle body pieces
+[ ] custom block creation
+[ ] MY BLOCKS
+[ ] player-facing catalog
+
+Blueprint:
+[ ] structured part instances
+[ ] positions
+[ ] rotations
+[ ] occupancy
+[ ] attachments
+[ ] mesh references
+[ ] material references
+[ ] functional metadata
+[ ] physics metadata
+[ ] schema/versioning
+[ ] save
+[ ] load
+[ ] rebuild
+[ ] summon
+
+Vehicle:
+[ ] mass aggregation
+[ ] center of mass
+[ ] collision
+[ ] inertia
+[ ] wheels
+[ ] suspension
+[ ] contact friction
+[ ] engine/motor
+[ ] steering
+[ ] propulsion
+[ ] helm/control station
+[ ] physical driving validation
+
+Inventory:
+[ ] wrist module
+[ ] grab/release
+[ ] close
+[ ] minimize
+[ ] expand
+[ ] follow
+[ ] pin
+[ ] visibility
+[ ] inventory expansion
+[ ] icon-size setting
+[ ] equipment slots
+[ ] accessories
+[ ] automatic resource pickup
+[ ] ownership/ghosting rules
+
+Verification:
+[ ] static file health
+[ ] scene load
+[ ] script/resource parse
+[ ] focused runtime checks
+[ ] aggregate verifier
+[ ] Android APK smoke test
+[ ] Quest runtime test
+[ ] interaction evidence
+[ ] IK evidence
+[ ] builder evidence
+[ ] blueprint evidence
+[ ] vehicle physics evidence
+
+AUTONOMY:
+[ ] project Bible
+[ ] machine-readable state
+[ ] authorized task queue
+[ ] dependency graph
+[ ] GitHub Actions worker
+[ ] callable AI/agent backend
+[ ] verification stage
+[ ] evidence recording
+[ ] retry policy
+[ ] escalation policy
+[ ] human-required state
+[ ] no silent scope expansion
+
+FINAL DESIGN INTENT
+-------------------
+The central idea is a Quest-first XR system in which the player is physically present in a persistent world and can physically interact with the world, their avatar, vehicles, construction pieces, tools, inventory, and authored creations.
+
+The construction system is not simply a collection of decorative cubes. Each piece has a spatial envelope, explicit occupancy, attachment logic, geometry, and physical metadata. A vehicle is not merely a mesh: it is a structured assembly whose blueprint can be saved, rebuilt, edited, validated, and physically simulated.
+
+The avatar is not merely a camera and floating hands. Tracking, IK, physical collision, mass, gravity, and hand interaction form a unified foundation. Shoulder placement and elbow solving are first-class systems so the arms remain visually and physically coherent while following controller targets.
+
+The development system is not merely an AI that writes code. It is intended to become a controlled engineering pipeline with project memory, explicit state, scoped specialist agents, verification, evidence, GitHub source-of-truth, and eventually autonomous continuation when tasks are authorized and machine-verifiable.
+
+The most important rule throughout the project is simple:
+BUILD SMALL -> VERIFY FOR REAL -> RECORD EVIDENCE -> THEN EXPAND.
+
+END OF CONSOLIDATED RECORD
