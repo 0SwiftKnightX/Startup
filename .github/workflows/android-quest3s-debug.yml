@@ -16,6 +16,9 @@ env:
   GODOT_VERSION: "4.7.2-stable"
   EXPORT_PRESET: "Android Quest 3S"
   APK_PATH: "build/Startup-Quest3S-debug.apk"
+  ANDROID_HOME: "/usr/lib/android-sdk"
+  ANDROID_SDK_ROOT: "/usr/lib/android-sdk"
+  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
 
 jobs:
   build-android:
@@ -26,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           lfs: true
 
@@ -36,32 +39,73 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends python3
+          python3 --version
+          python3 -c 'import sys; assert sys.version_info >= (3, 9), sys.version'
           rm -rf /var/lib/apt/lists/*
 
       - name: Run project source verification
         run: |
           python3 tools/verify/run_all.py --source-only
 
-      - name: Verify Godot and Android toolchain
+      # The published godot-ci image does not include every runtime library
+      # required by the Godot Linux editor binary. Install the host runtime
+      # libraries before invoking Godot so --version/import/export are real
+      # executable checks rather than partial launches.
+      - name: Install Godot Linux runtime dependencies
         run: |
-          godot --version
-          java -version
-          echo "ANDROID_HOME=\${ANDROID_HOME:-unset}"
-          echo "ANDROID_SDK_ROOT=\${ANDROID_SDK_ROOT:-unset}"
-          test -x "\${ANDROID_HOME}/platform-tools/adb"
-          "\${ANDROID_HOME}/platform-tools/adb" version
-          test -x "\${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager"
-          "\${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager" --version
+          apt-get update
+          apt-get install -y --no-install-recommends             libfontconfig1             libdbus-1-3
+          ldconfig
+          test -e /usr/lib/x86_64-linux-gnu/libfontconfig.so.1
+          test -e /usr/lib/x86_64-linux-gnu/libdbus-1.so.3
+          rm -rf /var/lib/apt/lists/*
+
+      # Godot 4.7 documents these Android SDK components for Linux exports:
+      # platform-tools >= 35, build-tools 35.0.1, platform 35, latest command
+      # line tools, CMake 3.10.2.4988404, and NDK 28.1.13356709 (r28b).
+      - name: Prepare Android SDK for Godot 4.7
+        run: |
+          test -x "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager"
+          yes | "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager" --sdk_root="${ANDROID_HOME}" --licenses
+          "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager" --sdk_root="${ANDROID_HOME}"             "platform-tools"             "build-tools;35.0.1"             "platforms;android-35"             "cmdline-tools;latest"             "cmake;3.10.2.4988404"             "ndk;28.1.13356709"
+          test -x "${ANDROID_HOME}/platform-tools/adb"
+          test -x "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager"
+          test -d "${ANDROID_HOME}/build-tools/35.0.1"
+          test -d "${ANDROID_HOME}/platforms/android-35"
+          test -d "${ANDROID_HOME}/cmake/3.10.2.4988404"
+          test -d "${ANDROID_HOME}/ndk/28.1.13356709"
 
       # The godot-ci image stores its Android editor settings and export
       # templates under /root. GitHub Actions runs the container with a
-      # different HOME, so expose the image's known-good Android setup.
+      # different HOME, so expose the image's known-good Godot settings and
+      # export templates to the actual workflow HOME.
       - name: Configure Godot Android export environment
         run: |
-          mkdir -p ~/.config ~/.local/share/godot
-          cp -a /root/.config/godot/. ~/.config/godot/
-          mkdir -p ~/.local/share/godot/export_templates
-          cp -a /root/.local/share/godot/export_templates/. ~/.local/share/godot/export_templates/
+          mkdir -p "${HOME}/.config/godot" "${HOME}/.local/share/godot/export_templates"
+          cp -a /root/.config/godot/. "${HOME}/.config/godot/"
+          cp -a /root/.local/share/godot/export_templates/. "${HOME}/.local/share/godot/export_templates/"
+          test -f "${HOME}/.config/godot/editor_settings-4.7.tres"
+          test -d "${HOME}/.local/share/godot/export_templates/4.7.2.stable"
+          grep -q 'export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"'             "${HOME}/.config/godot/editor_settings-4.7.tres"
+          grep -q 'export/android/android_sdk_path = "/usr/lib/android-sdk"'             "${HOME}/.config/godot/editor_settings-4.7.tres"
+
+      # Validate the actual binaries, paths, and versions used by the export.
+      # Do not escape shell variables: these must expand inside the container.
+      - name: Verify Godot and Android toolchain
+        run: |
+          set -eu
+          test -x /usr/local/bin/godot
+          test -x "${JAVA_HOME}/bin/java"
+          test -x "${ANDROID_HOME}/platform-tools/adb"
+          test -x "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager"
+          godot --version
+          java -version
+          "${ANDROID_HOME}/platform-tools/adb" version
+          "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager" --version
+          test -d "${ANDROID_HOME}/build-tools/35.0.1"
+          test -d "${ANDROID_HOME}/platforms/android-35"
+          test -d "${ANDROID_HOME}/cmake/3.10.2.4988404"
+          test -d "${ANDROID_HOME}/ndk/28.1.13356709"
 
       - name: Verify Android export preset
         run: |
@@ -81,32 +125,42 @@ jobs:
         run: |
           python3 tools/verify/run_all.py --runtime-only
 
-      # Godot's documented CLI contract is to install the Android Gradle
-      # build template in conjunction with the actual Android export.
-      # Keeping the install attached to export avoids a separate editor-start
-      # path that can probe ADB and fail when no device daemon is running.
+      # Godot 4.7 documents --install-android-build-template as an editor
+      # option used in conjunction with --export-debug/--export-release.
+      # Keeping it on the export command avoids a separate editor-start path
+      # that can probe ADB when no device daemon exists in CI.
       - name: Build debug APK with Android Gradle template
         run: |
           mkdir -p build
-          godot --headless --path . --export-debug "\${EXPORT_PRESET}" "\${APK_PATH}" --install-android-build-template
+          godot --headless --path .             --export-debug "${EXPORT_PRESET}" "${APK_PATH}"             --install-android-build-template
 
+      # A Gradle build must leave a complete project in res://android before
+      # the APK is considered valid.
       - name: Verify Android Gradle project
         run: |
+          test -d android
+          test -d android/build
           test -f android/build.gradle
           test -f android/gradlew
+          test -x android/gradlew
           test -f android/.build_version
           grep -q '4.7.2' android/.build_version
+          ./android/gradlew --version
 
+      # Verify both the APK container and its basic Android package structure.
       - name: Verify APK artifact
         run: |
-          test -s "\${APK_PATH}"
-          file "\${APK_PATH}"
-          ls -lh "\${APK_PATH}"
+          test -s "${APK_PATH}"
+          file "${APK_PATH}"
+          unzip -t "${APK_PATH}" >/dev/null
+          unzip -l "${APK_PATH}" | grep -q 'AndroidManifest.xml'
+          unzip -l "${APK_PATH}" | grep -q 'classes.dex'
+          ls -lh "${APK_PATH}"
 
       - name: Upload downloadable debug APK
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Startup-Quest3S-debug
-          path: \${{ env.APK_PATH }}
+          path: ${{ env.APK_PATH }}
           if-no-files-found: error
           retention-days: 14
