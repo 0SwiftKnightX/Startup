@@ -20,6 +20,7 @@ contributors to the right document for deeper work.
 - [First Slice Architecture](FIRST_SLICE_ARCHITECTURE.md) - input, interaction, update-loop, and verifier contracts for the first playable slice.
 - [Next Implementation Plan](NEXT_IMPLEMENTATION_PLAN.md) - prioritized tasks and acceptance gates for the next milestones.
 - [Implementation Checklist](IMPLEMENTATION_CHECKLIST.md) - granular sub-tasks and evidence gates for each milestone.
+- [Repository Audit](REPOSITORY_AUDIT.md) - current implementation status, verified evidence, and remaining gaps.
 
 ## Documentation Rules
 

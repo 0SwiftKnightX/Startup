@@ -16,7 +16,14 @@ class ProjectContractVerifier(BaseVerifier):
             "scenes/main.tscn": [
                 '[node name="StartupXR" type="Node"]',
                 'script = ExtResource("1_main")',
-                '[node name="LaunchButton" type="Button" parent="MainMenu/Panel/Content"]',
+                '[node name="PlayerRig" parent="." instance=ExtResource("2_player")]',
+                '[node name="MenuSurface" parent="PlayerRig" instance=ExtResource("3_viewport")]',
+                'scene = ExtResource("4_menu")',
+            ],
+            "scenes/main_menu_panel.tscn": [
+                '[node name="MainMenuPanel" type="Control"]',
+                '[node name="LaunchButton" type="Button" parent="Panel/Content"]',
+                '[node name="QuitButton" type="Button" parent="Panel/Content"]',
             ],
             "scenes/interaction_lab.tscn": [
                 '[node name="InteractionLab" type="Node3D"]',
@@ -29,7 +36,8 @@ class ProjectContractVerifier(BaseVerifier):
                 '[node name="InteractionArea" type="Area3D" parent="ScanStation"]',
                 '[node name="HeroState" type="Node" parent="."]',
                 '[node name="PlayerRig" parent="." instance=ExtResource("3_player")]',
-                '[node name="ArenaTarget" type="Node3D" parent="."]',
+                '[node name="ArenaTarget" type="StaticBody3D" parent="."]',
+                '[node name="Collision" type="CollisionShape3D" parent="ArenaTarget"]',
                 'script = ExtResource("6_target")',
             ],
         }

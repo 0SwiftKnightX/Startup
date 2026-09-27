@@ -17,12 +17,15 @@ class ArenaTargetVerifier(BaseVerifier):
             "func reset",
             "signal damaged",
             "signal defeated",
+            "_set_visual_color",
         ]:
             if not self.require_text(repo_root, "scripts/arena_target.gd", needle, self.name, details):
                 ok = False
         for needle in [
             "@onready var arena_target: ArenaTarget",
-            "arena_target.receive_attack()",
+            "arena_target.receive_attack(damage)",
+            "func _perform_attack(damage: int, controller: XRController3D = null)",
+            "func _is_targeted(controller: XRController3D)",
             "Target health",
         ]:
             if not self.require_text(repo_root, "scripts/interaction_lab.gd", needle, self.name, details):

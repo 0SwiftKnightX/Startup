@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource path="res://tools/verify/runtime/scan_station_runtime_test.gd" type="Script" id="1_test"]
+[ext_resource path="res://scripts/scan_station.gd" type="Script" id="2_station"]
+[ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id="3_pickable"]
+
+[sub_resource type="BoxShape3D" id="StationShape"]
+size = Vector3(1.0, 1.0, 1.0)
+
+[sub_resource type="BoxShape3D" id="SoulShape"]
+size = Vector3(0.25, 0.25, 0.25)
+
+[sub_resource type="BoxMesh" id="StationMesh"]
+size = Vector3(1.0, 1.0, 1.0)
+
+[node name="ScanStationRuntimeTest" type="Node"]
+script = ExtResource("1_test")
+
+[node name="ScanStation" type="Node3D" parent="."]
+script = ExtResource("2_station")
+
+[node name="Mesh" type="MeshInstance3D" parent="ScanStation"]
+mesh = SubResource("StationMesh")
+
+[node name="InteractionArea" type="Area3D" parent="ScanStation"]
+collision_layer = 8
+collision_mask = 65540
+
+[node name="Collision" type="CollisionShape3D" parent="ScanStation/InteractionArea"]
+shape = SubResource("StationShape")
+
+[node name="Soul" type="RigidBody3D" parent="." groups=["scannable_soul"]]
+collision_layer = 1048580
+collision_mask = 0
+position = Vector3(0, 0, -3)
+script = ExtResource("3_pickable")
+
+[node name="Collision" type="CollisionShape3D" parent="Soul"]
+shape = SubResource("SoulShape")
+
+[node name="InvalidTarget" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0

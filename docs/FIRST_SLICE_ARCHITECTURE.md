@@ -4,7 +4,7 @@
 
 The first playable slice establishes the responsive XR interaction loop before adding full multiplayer, hero rosters, or user-generated arenas. It combines the verified interaction ideas from HERO x HERO and Q.U.I.R.K. with the four existing XR reference repositories.
 
-The slice must be playable on desktop first and remain compatible with the Quest 3S target. A Python verifier checks project contracts; Godot runtime checks prove that GDScript and scenes actually execute.
+The product slice is Quest-first; desktop controls are only a development fallback. A Python verifier checks project contracts, while Godot runtime checks prove that GDScript and scenes actually execute.
 
 ## Verified Reference Inputs
 
@@ -21,20 +21,20 @@ These references inform behavior and boundaries. Their projects are not merged w
 
 ### XR Input Layer
 
-Reads headset and controller state from Godot XR Tools/OpenXR and exposes named actions. Gameplay scripts must consume actions and poses, not raw device-specific checks.
+Reads headset and controller state from Godot XR Tools/OpenXR's separate XR action map at `openxr_action_map.tres`. Gameplay scripts must consume XR named actions and poses, not raw device-specific button paths. The ordinary Godot InputMap is used only for desktop fallback.
 
 Required action groups:
 
 | Action | Default Quest input | Owner |
 | --- | --- | --- |
-| Move | Left thumbstick | Locomotion |
-| Turn | Right thumbstick | Locomotion |
+| Move | Left thumbstick (`primary` on left controller) | XR Tools direct movement |
+| Turn | Right thumbstick (`primary` on right controller) | XR Tools snap/smooth turn |
 | Point | Controller pose and ray direction | Pointer |
-| Grab | Grip, with threshold and hysteresis | Interaction |
-| Primary | Trigger | Interaction / hero state |
-| Cancel | B or Y | Flow / interaction cancellation |
-| Confirm | A or X | UI / flow confirmation |
-| Secondary | Unassigned until a feature needs it | Feature-specific |
+| Grab/attack | Grip; hold and swing a hand for arena attack | Pickup/hero action |
+| Scan/charge | Trigger while holding soul; Grip + Trigger charges arena attack | Interaction/hero action |
+| Confirm | A or X (`ax_button`) | Menu/flow confirmation |
+| Cancel/back | B or Y (`by_button`) | Menu/flow cancellation |
+| Haptics | `haptic` output action | XR Tools rumble manager |
 
 A and X, and B and Y, are context actions. Thumb contact or capacitive side sensing is optional and must never be required because it is not a guaranteed contract across runtimes.
 
@@ -44,7 +44,7 @@ Owns the XR origin, head, controller poses, hand poses, and sampled controller v
 
 ### Locomotion
 
-Consumes Move and Turn actions plus the player rig. It applies comfort settings, snap-turn or smooth-turn policy, and collision-aware movement. Arm-swing locomotion may be a later profile; it must not replace a reliable thumbstick fallback for seated play.
+`XRToolsPlayerBody` owns collision-aware body movement. `XRToolsMovementDirect` on the left controller provides thumbstick movement. `XRToolsMovementTurn` on the right controller uses XR Tools snap-turn by default and supports the user setting for smooth turn. Optional `XRToolsMovementJog` is exposed as an arm-swing checkbox in the world-space menu; thumbstick control remains available for seated play.
 
 ### Pointer and Interaction
 
@@ -59,7 +59,7 @@ Grab flow:
 5. Release or cancellation returns ownership to physics.
 6. Throw velocity comes from sampled hand motion, not a delayed animation.
 
-A remote ray grab is an explicit feature and must define maximum range, obstruction behavior, target filtering, and release behavior before it is enabled.
+XR Tools ranged pickup is enabled with a five-meter range and pickable-layer filtering. The pointer is separately configured for pointable/ui collision layers, an eight-meter target range, and a visible hit marker. Verify obstruction and target priority on Quest before changing those defaults.
 
 ### Hero State
 
@@ -98,8 +98,10 @@ The goal is responsive correspondence with tracking, not an unsupported claim th
 8. One test arena with a target dummy.
 9. Return-to-menu and state reset.
 10. Haptic and visual feedback on confirmed interaction.
+11. Low-poly XR Tools hands with Grip/Trigger hand animation.
+12. World-space XR Tools viewport menu so the boot flow works in headset.
 
-Remote ray grabbing, arm-swing movement, hero weapons, multiplayer networking, AI waves, construction blocks, and Q.U.I.R.K.-style tools follow only after this slice passes runtime and Quest checks.
+Hero weapons, multiplayer networking, AI waves, construction blocks, and Q.U.I.R.K.-style tools follow only after this slice passes runtime and Quest checks.
 
 ## Verification Contract
 

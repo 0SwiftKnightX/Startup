@@ -13,7 +13,8 @@ var last_frame_time_usec := 0
 @onready var origin: XROrigin3D = get_parent() as XROrigin3D
 
 func _physics_process(delta: float) -> void:
-	if origin == null:
+	var openxr := XRServer.find_interface("OpenXR") as OpenXRInterface
+	if origin == null or (openxr and openxr.is_initialized()):
 		return
 	last_frame_time_usec = Time.get_ticks_usec()
 	var input_vector := Input.get_vector("xr_move_left", "xr_move_right", "xr_move_forward", "xr_move_back")

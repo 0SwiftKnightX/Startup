@@ -17,11 +17,17 @@ class MainMenuVerifier(BaseVerifier):
         if not self.require_file(repo_root, "scripts/main.gd", self.name, details):
             ok = False
 
-        if not self.require_text(repo_root, "scripts/main.gd", "launch_button", self.name, details):
+        if not self.require_text(repo_root, "scenes/main.tscn", 'ExtResource("3_viewport")', self.name, details):
             ok = False
-        if not self.require_text(repo_root, "scripts/main.gd", "quit_button", self.name, details):
+        if not self.require_text(repo_root, "scenes/main.tscn", 'scene = ExtResource("4_menu")', self.name, details):
             ok = False
         if not self.require_text(repo_root, "scripts/main.gd", "change_scene_to_file", self.name, details):
+            ok = False
+        if not self.require_text(repo_root, "scripts/main.gd", 'button == "ax_button"', self.name, details):
+            ok = False
+        if not self.require_text(repo_root, "scripts/main.gd", 'button == "by_button"', self.name, details):
+            ok = False
+        if not self.require_text(repo_root, "scripts/main_menu_panel.gd", "launch_requested", self.name, details):
             ok = False
 
         if ok:

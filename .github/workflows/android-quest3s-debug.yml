@@ -50,6 +50,12 @@ jobs:
         run: |
           godot --headless --path . --editor --quit
 
+      - name: Install Python for project verification
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3
+          rm -rf /var/lib/apt/lists/*
+
       - name: Run project verification
         run: |
           python3 tools/verify/run_all.py

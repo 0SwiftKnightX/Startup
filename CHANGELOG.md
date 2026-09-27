@@ -29,6 +29,28 @@ this project uses semantic versioning when releases begin.
 	Vendors 5.1.0-stable for local validation.
 - Installed the matching Godot 4.7.2 Android export templates for future Quest
   APK builds.
+- Enabled the OpenXR module and shaders, configured the Mobile renderer, and
+	added a Quest Touch action map for controls, poses, and haptics.
+- Added the canonical XR player rig, low-poly tracked hands, world-space XR
+	menu, XR Tools body/movement/pickup/pointer components, and optional arm-swing.
+- Added scan station feedback, haptics, an aim-gated arena target, and a
+	deterministic fallback end-to-end runtime test.
+- Expanded the shared verification suite to twelve checks, including a negative
+	contract test and CI-compatible Godot executable discovery.
+- Updated the Quest Android workflow to install Python before running project
+	verification.
+
+### Validation and Limitations
+
+- Godot 4.7.2 headless import and the 12-check verifier suite pass locally.
+- The end-to-end desktop fallback loop passes; it does not constitute OpenXR or
+	Quest device validation.
+- The latest observed GitHub Actions run failed because the CI image lacked
+	Python. The workflow fix is local and still requires a push and successful
+	rerun before an APK artifact is available.
+- This workspace lacks a usable OpenXR runtime, Android SDK/ADB, and Android
+	export templates. Quest 3S acceptance, comfort, and performance evidence are
+	still pending.
 
 ## 2026-09-22
 

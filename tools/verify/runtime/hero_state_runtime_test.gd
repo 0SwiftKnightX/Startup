@@ -2,6 +2,7 @@ extends Node
 
 func _ready() -> void:
 	var hero_state := HeroState.new()
+	var arena_target := ArenaTarget.new()
 	var failures: Array[String] = []
 
 	_check(hero_state.current_state == HeroState.LOBBY, "initial state is lobby", failures)
@@ -15,18 +16,26 @@ func _ready() -> void:
 	_check(hero_state.enter_arena(), "arena entry succeeds", failures)
 	_check(hero_state.current_state == HeroState.ARENA, "state becomes arena", failures)
 	_check(not hero_state.transform(), "transformation cannot repeat in arena", failures)
+	_check(arena_target.receive_attack(), "first arena hit succeeds", failures)
+	_check(arena_target.health == 2, "arena target health drops to 2", failures)
+	_check(arena_target.receive_attack(), "second arena hit succeeds", failures)
+	_check(arena_target.health == 1, "arena target health drops to 1", failures)
+	_check(arena_target.receive_attack(), "final arena hit succeeds", failures)
+	_check(arena_target.health == 0, "arena target health reaches 0", failures)
 	_check(hero_state.return_to_lobby(), "return to lobby succeeds", failures)
 	_check(hero_state.current_state == HeroState.LOBBY, "return resets to lobby", failures)
 
 	if failures.is_empty():
-		print("RUNTIME_PASS HeroState transitions")
+		print("RUNTIME_PASS Quest-first loop transitions")
 		hero_state.free()
+		arena_target.free()
 		get_tree().quit(0)
 		return
 
 	for failure in failures:
 		push_error("RUNTIME_FAIL " + failure)
 	hero_state.free()
+	arena_target.free()
 	get_tree().quit(1)
 
 func _check(condition: bool, description: String, failures: Array[String]) -> void:

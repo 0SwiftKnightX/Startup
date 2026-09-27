@@ -1,10 +1,16 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource path="res://scripts/xr_player.gd" type="Script" id="1_player"]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id="2_pickup"]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id="3_pointer"]
 [ext_resource path="res://addons/godot-xr-tools/xr/start_xr.tscn" type="PackedScene" id="4_start"]
 [ext_resource path="res://scripts/comfort_locomotion.gd" type="Script" id="5_locomotion"]
+[ext_resource path="res://addons/godot-xr-tools/player/player_body.tscn" type="PackedScene" id="6_body"]
+[ext_resource path="res://addons/godot-xr-tools/functions/movement_direct.tscn" type="PackedScene" id="7_direct"]
+[ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id="8_turn"]
+[ext_resource path="res://addons/godot-xr-tools/functions/movement_jog.tscn" type="PackedScene" id="9_jog"]
+[ext_resource path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" type="PackedScene" id="10_left_hand"]
+[ext_resource path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" type="PackedScene" id="11_right_hand"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_left"]
 size = Vector3(0.12, 0.12, 0.24)
@@ -19,8 +25,13 @@ background_color = Color(0.035, 0.047, 0.063, 1)
 [node name="XRPlayer" type="XROrigin3D"]
 script = ExtResource("1_player")
 
+[node name="PlayerBody" parent="." instance=ExtResource("6_body")]
+
 [node name="ComfortLocomotion" type="Node" parent="."]
 script = ExtResource("5_locomotion")
+
+[node name="MovementJog" parent="." instance=ExtResource("9_jog")]
+enabled = false
 
 [node name="XRCamera3D" type="XRCamera3D" parent="."]
 position = Vector3(0, 1.6, 4)
@@ -32,31 +43,42 @@ position = Vector3(-0.5, 1.45, 3.5)
 tracker = &"left_hand"
 pose = &"aim"
 
-[node name="Visual" type="MeshInstance3D" parent="LeftController"]
-mesh = SubResource("BoxMesh_left")
+[node name="Hand" parent="LeftController" instance=ExtResource("10_left_hand")]
 
 [node name="Pickup" parent="LeftController" instance=ExtResource("2_pickup")]
-pickup_axis_action = "xr_left_grip"
-action_button_action = "xr_left_trigger"
+pickup_axis_action = "grip"
+action_button_action = "trigger_click"
 ranged_enable = true
 ranged_distance = 5.0
 
 [node name="Pointer" parent="LeftController" instance=ExtResource("3_pointer")]
+distance = 8.0
+laser_length = 1
+show_target = true
+
+[node name="MovementDirect" parent="LeftController" instance=ExtResource("7_direct")]
+input_action = "primary"
+strafe = true
 
 [node name="RightController" type="XRController3D" parent="."]
 position = Vector3(0.5, 1.45, 3.5)
 tracker = &"right_hand"
 pose = &"aim"
 
-[node name="Visual" type="MeshInstance3D" parent="RightController"]
-mesh = SubResource("BoxMesh_right")
+[node name="Hand" parent="RightController" instance=ExtResource("11_right_hand")]
 
 [node name="Pickup" parent="RightController" instance=ExtResource("2_pickup")]
-pickup_axis_action = "xr_right_grip"
-action_button_action = "xr_right_trigger"
+pickup_axis_action = "grip"
+action_button_action = "trigger_click"
 ranged_enable = true
 ranged_distance = 5.0
 
 [node name="Pointer" parent="RightController" instance=ExtResource("3_pointer")]
+distance = 8.0
+laser_length = 1
+show_target = true
+
+[node name="MovementTurn" parent="RightController" instance=ExtResource("8_turn")]
+input_action = "primary"
 
 [node name="StartXR" parent="." instance=ExtResource("4_start")]

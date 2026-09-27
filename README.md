@@ -5,9 +5,13 @@ polished experiences for Meta Quest headsets.
 
 ## Project Status
 
-Early development. The repository now contains a verified first-slice
-foundation with boot, menu, interaction-lab, XR rig, pickup, scan, hero-state,
-and arena-target systems. Physical device validation is still pending.
+Quest-first XR development. The repository contains a verified first-slice
+foundation for a Meta Quest 3S experience with boot, menu, interaction-lab, XR
+rig, pickup, scan, hero-state, and arena-target systems. Desktop controls remain
+only a development fallback; the product direction is not desktop-first gameplay.
+The local suite currently passes 12 verifier checks and the Godot project imports;
+OpenXR and physical device validation remain pending because this workspace has
+no active XR runtime or connected Quest.
 
 ## Target Platform
 
@@ -71,6 +75,9 @@ and [Architecture](docs/ARCHITECTURE.md) for the adopted direction.
 - [Locomotion Profiles](docs/LOCOMOTION_PROFILES.md) - movement feature boundaries.
 - [Level Flow](docs/LEVEL_FLOW.md) - scene transition and game-loop responsibilities.
 - [Asset Pipeline](docs/ASSET_PIPELINE.md) - performance-aware asset organization.
+- [First Slice Architecture](docs/FIRST_SLICE_ARCHITECTURE.md) - XR input, update-loop, and ownership contracts.
+- [Implementation Checklist](docs/IMPLEMENTATION_CHECKLIST.md) - milestone tasks and acceptance gates.
+- [Repository Audit](docs/REPOSITORY_AUDIT.md) - current verified state and open gaps.
 
 ## AI-Assisted Development
 
@@ -85,6 +92,8 @@ plus a GitHub Actions debug APK workflow. Run the local verifier and Godot impor
 checks before deployment. Start with the [Integration Blueprint](docs/INTEGRATION_BLUEPRINT.md),
 then follow the [Implementation Checklist](docs/IMPLEMENTATION_CHECKLIST.md),
 [Test Plan](docs/TEST_PLAN.md), and [Validation](docs/VALIDATION.md).
+The current Android workflow still needs a successful Actions run before an APK
+artifact is available.
 
 Physical Quest testing is required for tracking, performance, passthrough,
 comfort, and controller behavior. PCVR preview and headless checks do not replace
@@ -97,5 +106,5 @@ changes.
 
 ## Update Record
 
-- **Updated:** 2026-09-22T03:50:49Z
+- **Updated:** 2026-09-27T06:00:29Z
 - **Signed:** GitHub Copilot

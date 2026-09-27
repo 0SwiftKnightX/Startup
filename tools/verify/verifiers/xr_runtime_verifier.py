@@ -18,7 +18,9 @@ class XRRuntimeVerifier(BaseVerifier):
             ok = False
         if not self.require_text(repo_root, "project.godot", "hand_tracking=true", self.name, details):
             ok = False
-        if not self.require_text(repo_root, "project.godot", "renderer/rendering_method.mobile=\"gl_compatibility\"", self.name, details):
+        if not self.require_text(repo_root, "project.godot", "renderer/rendering_method.mobile=\"mobile\"", self.name, details):
+            ok = False
+        if not self.require_text(repo_root, "project.godot", "openxr/enabled=true", self.name, details):
             ok = False
 
         if ok:

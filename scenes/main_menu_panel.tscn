@@ -1,0 +1,72 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource path="res://scripts/main_menu_panel.gd" type="Script" id="1_menu"]
+
+[node name="MainMenuPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.047, 0.063, 1)
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 220.0
+offset_top = 110.0
+offset_right = 1060.0
+offset_bottom = 610.0
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "STARTUP XR"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "HERO TRAINING FACILITY"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Panel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="Status" type="Label" parent="Panel/Content"]
+layout_mode = 2
+text = "XR READY  |  QUEST 3S"
+horizontal_alignment = 1
+
+[node name="ArmSwingToggle" type="CheckBox" parent="Panel/Content"]
+layout_mode = 2
+text = "Enable arm-swing locomotion"
+
+[node name="SmoothTurnToggle" type="CheckBox" parent="Panel/Content"]
+layout_mode = 2
+text = "Use smooth turning"
+
+[node name="LaunchButton" type="Button" parent="Panel/Content"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+text = "ENTER TRAINING ARENA"
+
+[node name="QuitButton" type="Button" parent="Panel/Content"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+text = "QUIT"

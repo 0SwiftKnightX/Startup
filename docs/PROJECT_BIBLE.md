@@ -7,10 +7,11 @@ responsive, and polished experiences for Meta Quest headsets.
 
 ## Current Direction
 
-- Initial device target: Meta Quest 3S standalone.
+- Primary product target: Meta Quest 3S standalone.
 - Runtime direction: OpenXR on Android.
 - Engine direction: Godot 4.7.2-stable for the current validation baseline.
-- Development phase: Godot foundation and integration planning.
+- Development phase: XR-first gameplay foundation and Quest validation planning.
+- Desktop behavior: developer fallback only, not a primary game loop.
 
 These are project targets, not claims that the repository is already deployable
 or validated on physical hardware.
@@ -25,13 +26,15 @@ or validated on physical hardware.
 
 ## Planned Experience
 
-The initial mechanics direction includes locomotion, teleportation, controller
-and hand interaction, grabbing, climbing, haptics, and spatial UI. The primary
-core loop remains to be selected before production gameplay implementation.
+The current first playable prototype uses a world-space XR menu, tracked low-poly
+hands, thumbstick locomotion/turning, optional arm-swing movement, ranged soul
+pickup, scan, hero-state transition, and a test target. This is a systems slice,
+not a claim that production gameplay, comfort, or Quest runtime acceptance is
+complete.
 
-The first implementation slice is a boot scene, main menu, and interaction lab.
-The lab is a composition target for XR Tools interactions and locomotion profiles;
-it does not yet claim OpenXR or Quest runtime support.
+Teleportation, climbing, multiplayer, enemy waves, and sandbox construction
+remain later features. Desktop controls exist only to exercise fallback logic
+without an OpenXR runtime; they do not define product acceptance.
 
 ## Technology Direction
 
@@ -70,7 +73,7 @@ architecture decisions, test evidence, release notes, or AI worklogs.
 
 ## Open Decisions
 
-- Select the primary gameplay interaction loop.
-- Confirm the exact Godot editor version to lock for the first implementation.
-- Confirm the final XR Tools and vendor plugin package versions for that editor.
-- Define the first playable vertical slice.
+- Accept or revise the prototype interaction loop after Quest 3S testing.
+- Lock the Android/Godot export toolchain after the first successful cloud APK.
+- Define hero profiles and production presentation after the first target loop is accepted.
+- Design multiplayer and sandbox systems only after the single-player Quest slice passes acceptance.

@@ -1,12 +1,15 @@
 {
   "verifiers": [
     "ArenaTargetVerifier",
+    "FirstSliceRuntimeVerifier",
     "HeroFlowVerifier",
     "HeroStateRuntimeVerifier",
     "InteractionLabVerifier",
     "MainMenuVerifier",
     "ProjectContractVerifier",
+    "ScanStationRuntimeVerifier",
     "SetupControllerVerifier",
+    "VerifierFailureVerifier",
     "XRPlayerVerifier",
     "XRRuntimeVerifier"
   ]

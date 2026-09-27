@@ -146,6 +146,62 @@ Active worklog for GitHub Copilot changes in this repository.
 - **Limitations:** Quest hardware and cloud APK execution remain unvalidated.
 - **Signed:** GitHub Copilot
 
+## 2026-09-27T06:07:27Z - Quest XR First-Slice Integration
+
+- Enabled OpenXR and XR shaders in `project.godot`, selected the Mobile
+  renderer, and configured the project-owned Oculus Touch action map.
+- Composed the XR Tools player body, tracked low-poly hands, controller
+  pointers, direct movement, turn provider, and optional arm-swing jog provider.
+- Replaced the flat boot menu with a world-space XR Tools viewport menu and
+  connected A/X, B/Y, arm-swing, and smooth-turn controls.
+- Fixed both controller pickup components to use the action-map `grip` and
+  `trigger_click` actions.
+- Added visible scan and target feedback, haptics, runtime-only scannable group
+  registration, and aim-gated target attacks.
+- Added scan-station and end-to-end fallback runtime tests, plus a negative
+  verifier test for a missing required menu node.
+- Made Godot runtime verifiers use `.tools/godot` locally or `godot` from PATH in
+  CI.
+- Updated the Android workflow to install Python 3. The latest observed run
+  (`36226832612`) failed before this change because the container had no
+  `python3`; the fix still requires a push and fresh Actions run.
+- **Validation:** 12 verifiers passed; Godot 4.7.2 editor import passed; boot
+  scene launched in desktop fallback; first-slice runtime test passed.
+- **Limitations:** This container has no OpenXR runtime, Quest headset, Android
+  SDK/ADB, or Godot Android export templates. Quest behavior and APK delivery
+  remain unverified. OpenXR's expected no-runtime initialization errors appear
+  during headless startup.
+- **Signed:** GitHub Copilot
+
+## 2026-09-27T06:08:45Z - Quest XR First-Slice Stop Point
+
+- Enabled OpenXR/OpenXR shaders and configured the Godot Mobile renderer with
+  the project's Oculus Touch action map.
+- Composed a single XR Tools player rig with player body, tracked low-poly hands,
+  controller pointers, direct movement, snap/smooth turning, and optional
+  arm-swing jog.
+- Replaced the flat boot menu with an XR Tools world-space menu and mapped
+  A/X, B/Y, arm-swing toggle, and smooth-turn toggle.
+- Corrected both XR pickup nodes to use OpenXR `grip` and `trigger_click` actions.
+- Added visible pointer feedback, a scan overlap/state contract with visual and
+  haptic feedback, and a pointable arena target with aim-gated damage and hit
+  feedback.
+- Added end-to-end fallback runtime testing, scan runtime testing, and a
+  negative missing-contract verifier test.
+- Made Godot runtime verifiers locate `.tools/godot` locally or `godot` on PATH
+  in CI.
+- Fixed the Android workflow to install Python 3 before project verification.
+- Updated the repository audit, implementation checklist, validation report,
+  project bible, root README, and changelog.
+- **Validation:** 12 verifiers passed; Godot 4.7.2 headless import passed; boot
+  scene ran in desktop fallback; end-to-end fallback loop passed.
+- **Limitations:** Latest observed Actions run `36226832612` failed because
+  Python was absent; the fix is local and requires push plus a successful rerun.
+  The container has no active OpenXR runtime, Quest 3S, Android SDK/ADB, or local
+  Android export templates. Physical device acceptance, APK artifact, Quest
+  comfort, and performance remain unverified.
+- **Signed:** GitHub Copilot
+
 ## Entry Template
 
 ```text

@@ -1,11 +1,11 @@
 ; Startup Godot project configuration.
-; XR plugin integration is intentionally staged after this foundation imports cleanly.
+; OpenXR is enabled for Quest-first runtime; desktop fallback is for development only.
 config_version=5
 
 [application]
 config/name="Startup XR"
 run/main_scene="res://scenes/main.tscn"
-config/features=PackedStringArray("4.6", "GL Compatibility")
+config/features=PackedStringArray("4.7")
 
 [display]
 window/size/viewport_width=1280
@@ -113,13 +113,14 @@ xr_turn_right={
 }
 
 [rendering]
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
 environment/defaults/default_clear_color=Color(0.035, 0.047, 0.063, 1)
 
 [xr]
-
-; OpenXR is provided by Godot 4; vendor extensions are supplied by the addon.
+openxr/enabled=true
+openxr/default_action_map="res://openxr_action_map.tres"
+shaders/enabled=true
 
 [xr/openxr/extensions]
 hand_tracking=true

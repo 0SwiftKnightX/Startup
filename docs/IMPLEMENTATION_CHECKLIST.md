@@ -23,7 +23,7 @@ This checklist is the executable breakdown of [Next Implementation Plan](NEXT_IM
 - [x] Validate required action bindings.
 - [x] Validate verifier manifest coverage.
 - [x] Include source path and contract name in failures.
-- [ ] Add a negative test proving a missing contract fails.
+- [x] Add a negative test proving a missing contract fails.
 
 **Done when:** removing a required node, action, or verifier produces a clear failure.
 
@@ -35,7 +35,7 @@ This checklist is the executable breakdown of [Next Implementation Plan](NEXT_IM
 - [x] Add one `XRCamera3D` under the origin.
 - [x] Add one left `XRController3D`.
 - [x] Add one right `XRController3D`.
-- [x] Add controller pose visuals.
+- [x] Add tracked low-poly controller hands.
 - [x] Confirm no second XR origin is created by another scene.
 - [x] Add XR runtime status: active, unavailable, or desktop fallback.
 
@@ -59,72 +59,73 @@ This checklist is the executable breakdown of [Next Implementation Plan](NEXT_IM
 ## Milestone 3: Interaction Core
 
 ### 3.1 XR Tools pickup
-
+ [x] Add a negative test proving a missing contract fails.
 - [x] Replace the temporary soul node with `XRToolsPickable`.
 - [x] Add `XRToolsFunctionPickup` to the controller rig.
-- [x] Configure near-grab collision layers.
-- [x] Configure ranged-grab collision layers.
-- [x] Configure maximum ranged-grab distance.
-- [ ] Connect pickup and release signals.
-- [ ] Connect Trigger action while held.
-- [ ] Verify throw velocity sampling.
-- [ ] Preserve desktop keyboard fallback.
+ [x] Connect pickup and release signals.
+ [x] Connect Trigger action while held.
+ [x] Configure XR Tools throw velocity sampling.
+ [x] Preserve desktop keyboard fallback.
+- [x] Connect Trigger action while held.
+- [x] Configure XR Tools throw velocity sampling.
+ [x] Add pointer origin to each controller.
+ [x] Add pointer direction from current controller pose.
+ [x] Add valid-target collision layer.
+ [x] Add visible target marker and laser feedback.
+ [x] Use first-hit ray collision for obstruction handling.
+ [x] Set an 8-meter pointer range.
+ [x] Verify off-target attacks are rejected in the runtime slice test.
+- [x] Add pointer direction from current controller pose.
+- [x] Add valid-target collision layer.
+ [x] Add haptic feedback after confirmed scan.
+ [x] Add visual feedback after confirmed scan.
+ [x] Add verifier coverage for valid and invalid scans.
+- [x] Verify off-target attacks are rejected in the runtime slice test.
 
-**Done when:** near pickup, remote pickup, hold, release, and throw work in the lab.
-
-### 3.2 Ray pointer
-
-- [ ] Add pointer origin to each controller.
-- [ ] Add pointer direction from current controller pose.
-- [ ] Add valid-target collision layer.
-- [ ] Add target highlight state.
-- [ ] Add obstruction handling.
-- [ ] Add maximum pointer range.
-- [ ] Verify the ray does not select invalid world geometry.
-
-**Done when:** the player can aim at a remote valid object and receive immediate feedback.
-
+ [x] Add optional smooth turn.
+ [x] Add collision-aware body movement through `XRToolsPlayerBody`.
 ### 3.3 Scan station
 
-- [x] Add station collision target.
-- [x] Accept only the selected soul.
-- [x] Add ready state.
-- [x] Add scanning state.
-- [x] Add completed state.
-- [x] Add rejected state.
-- [x] Prevent duplicate scans.
-- [ ] Add haptic feedback after confirmed scan.
-- [ ] Add visual feedback after confirmed scan.
-- [ ] Add verifier coverage for valid and invalid scans.
-
-**Done when:** scanning is an explicit interaction contract rather than a distance shortcut.
-
-## Milestone 4: Locomotion and Responsiveness
+ [x] Sample controller velocity through the XR Tools jog provider.
+ [x] Detect arm-stroke frequency through the XR Tools jog provider.
+ [x] Filter incidental movement with the provider confidence threshold.
+ [x] Convert detected strokes into player-body movement.
+ [x] Configure bounded slow/fast movement speeds.
+ [ ] Add fatigue limits.
+ [x] Add enable/disable setting in the XR menu.
+ [x] Preserve thumbstick fallback.
+ [x] Add verifier coverage for the provider and menu setting.
+- [x] Add visual feedback after confirmed scan.
+- [x] Add verifier coverage for valid and invalid scans.
+ [x] Lock transformation to the valid hero-state sequence.
+ [x] Verify transformed-state transitions.
+ [x] Reset the state after target defeat.
 
 ### 4.1 Comfort locomotion
-
-- [x] Add left-stick movement.
-- [x] Add dead-zone handling.
-- [x] Add acceleration and deceleration limits.
-- [x] Add right-stick snap turn.
-- [ ] Add optional smooth turn.
-- [ ] Add collision-aware body movement.
+ [x] Add one primary attack action.
+ [x] Add Grip-swing attack intent.
+ [x] Add charged Grip + Trigger action.
+ [x] Add attack cooldown.
+ [x] Add target visual/status hit feedback.
+ [x] Add haptic attack feedback.
+ [x] Add fallback runtime coverage for hit gating and damage/reset.
 - [ ] Add comfort/vignette configuration.
 - [ ] Add movement frame-time instrumentation.
-- [ ] Verify no blocking work runs in the tracking path.
-
-**Done when:** movement is predictable, comfortable, and does not visibly lag tracking.
-
-### 4.2 Arm-swing profile
-
-- [ ] Sample controller velocity.
-- [ ] Detect a valid arm stroke.
-- [ ] Reject accidental hand motion.
-- [ ] Convert strokes into movement intent.
-- [ ] Add speed and fatigue limits.
-- [ ] Add enable/disable setting.
-- [ ] Preserve thumbstick fallback.
-- [ ] Add verifier coverage.
+ [x] Add one pointable target dummy.
+ [x] Add health state.
+ [x] Require aim at the target before applying damage.
+ [x] Reject off-target attacks.
+ [x] Add hit/defeat visual feedback.
+ [x] Add reset behavior.
+ [x] Add arena verifier.
+ [x] Reset the loop after defeat; unloading to menu clears scene state.
+- [x] Filter incidental movement through the provider's confidence threshold.
+- [x] Convert detected strokes into player-body movement.
+- [x] Configure slow/fast movement speed limits.
+- [ ] Add fatigue limits.
+- [x] Add enable/disable setting in the XR menu.
+- [x] Preserve thumbstick fallback.
+- [x] Add verifier coverage for the provider/menu wiring.
 
 **Done when:** arm-swing movement is optional, controlled, and usable while seated fallback remains available.
 
@@ -134,34 +135,35 @@ This checklist is the executable breakdown of [Next Implementation Plan](NEXT_IM
 
 - [ ] Add one hero profile resource.
 - [ ] Change visual state after transformation.
-- [ ] Lock transformation to one successful scan.
-- [ ] Add transformed-state verifier.
-- [ ] Add reset behavior.
+- [x] Lock transformation to the validated hero-state sequence.
+- [x] Verify transformed-state transitions.
+- [x] Reset the hero state and scene after target defeat.
+- [ ] Add a production hero profile resource and transformed player presentation.
 
 **Done when:** transformation visibly and deterministically changes the player state.
 
 ### 5.2 Hero action
 
-- [ ] Add one primary attack action.
-- [ ] Add Grip-driven attack intent.
-- [ ] Add charged Grip + Trigger action.
-- [ ] Add cooldown ownership.
-- [ ] Add hit feedback.
-- [ ] Add haptic feedback.
-- [ ] Add runtime test coverage.
+- [x] Add one primary attack action.
+- [x] Add Grip-swing attack intent.
+- [x] Add charged Grip + Trigger attack.
+- [x] Add attack cooldown.
+- [x] Add target color/status hit feedback.
+- [x] Add haptic attack feedback.
+- [x] Add runtime test coverage for aim gating, damage, defeat, and reset.
 
 **Done when:** attacks are unavailable before transformation and deterministic afterward.
 
 ### 5.3 Arena target
 
-- [ ] Add one target dummy.
-- [ ] Add health state.
-- [ ] Add valid hit detection.
-- [ ] Add invalid-hit rejection.
-- [ ] Add hit visual feedback.
-- [ ] Add reset behavior.
-- [ ] Add arena verifier.
-- [ ] Verify return to menu clears arena state.
+- [x] Add one pointable target dummy.
+- [x] Add health state.
+- [x] Require the XR pointer or desktop ray to target the dummy before damage.
+- [x] Reject off-target attacks.
+- [x] Add hit/defeat visual feedback.
+- [x] Add reset behavior.
+- [x] Add arena verifier.
+- [x] Reset the loop after defeat; scene unloading clears it on menu return.
 
 **Done when:** one complete transform-to-target interaction loop works.
 
@@ -212,3 +214,16 @@ For every checked item, record:
 - known limitation.
 
 A parent milestone remains open until its children are checked and its `Done when` statement has fresh evidence.
+
+## Acceptance Blockers
+
+The code-level first-slice loop is implemented and covered by local runtime
+tests, but these acceptance gates remain open:
+
+- Push the Python installation step in `.github/workflows/android-quest3s-debug.yml` and confirm a successful APK artifact.
+- Install and launch that APK on a physical Meta Quest 3S.
+- Verify tracked poses, controller bindings, pointer targeting, near/ranged pickup, scan haptics, arm-swing comfort, smooth/snap turn, and attack feedback on-device.
+- Record Quest frame-time, thermal, comfort, and lifecycle results.
+- Add fatigue limits and production hero transformation visuals before treating the prototype slice as gameplay-complete.
+
+Do not mark the first playable slice Quest-accepted until the device evidence is recorded in [Validation](VALIDATION.md).

@@ -10,14 +10,15 @@ and physical Quest testing are different evidence levels.
 
 | Area | Status | Evidence |
 |---|---|---|
-| Documentation structure | Complete | Repository files created 2026-09-22 |
-| Godot project import | Passed | Godot 4.7.2-stable headless editor import |
-| Headless XR validation | Partial | Project smoke test passed; no headset runtime was available |
-| Android export templates | Installed | Godot 4.7.2-stable templates installed locally |
-| Android SDK and ADB | Not installed | Container has no Android SDK, ADB, or `ANDROID_HOME` |
-| PCVR preview | Not run | Requires a configured desktop OpenXR runtime |
-| Physical Meta Quest 3S test | Not run | Requires a deployable Android build |
-| Release readiness | Not certified | Implementation and device evidence are pending |
+| OpenXR project configuration | Configured, runtime unavailable | `project.godot` enables OpenXR/Mobile and references `openxr_action_map.tres`; this container has no active OpenXR runtime |
+| Godot project import | Passed | Godot 4.7.2-stable headless editor import, 2026-09-27 |
+| Automated verifier suite | Passed | `python3 tools/verify/run_all.py`: 12 passed, 0 failed, 2026-09-27 |
+| First-slice fallback runtime | Passed | Headless test covers soul selection, scan, transform, off-target rejection, aimed hits, defeat, and reset |
+| Desktop OpenXR preview | Not run | Requires a configured desktop OpenXR runtime and headset |
+| Local Android export | Blocked | `ANDROID_HOME`, `adb`, `sdkmanager`, and Godot Android export templates are absent in this workspace |
+| GitHub Actions APK build | Failed; workflow fix pending | Run `36226832612` imported successfully but failed because `python3` is missing in the container; workflow now installs Python, but that change has not been pushed/retested |
+| Physical Meta Quest 3S acceptance | Not run | Requires successful APK artifact and headset deployment |
+| Release readiness | Not certified | Quest, Android APK, comfort, and performance evidence are incomplete |
 
 ## Required Evidence
 
@@ -41,5 +42,7 @@ Every validation entry should include:
 
 ## Next Validation Milestone
 
-Configure a desktop OpenXR runtime, run the interaction lab, then deploy the
-same scene to Quest 3S and record the results here and in the audit archive.
+Push the workflow's Python installation fix and confirm a successful Android
+APK artifact. Then install that APK on Quest 3S and record boot, controller
+tracking, pointer, ranged pickup, scan, transformation, aim-gated attacks,
+comfort, and frame-time evidence here and in the audit archive.
