@@ -26,6 +26,7 @@ class ProjectContractVerifier(BaseVerifier):
                 '[node name="MainMenuPanel" type="Control"]',
                 '[node name="LaunchButton" type="Button" parent="Panel/Content"]',
                 '[node name="QuitButton" type="Button" parent="Panel/Content"]',
+                '[node name="SmoothTurnToggle" type="CheckBox" parent="Panel/Content"]',
             ],
             "scenes/interaction_lab.tscn": [
                 '[node name="InteractionLab" type="Node3D"]',
@@ -58,6 +59,16 @@ class ProjectContractVerifier(BaseVerifier):
         ]
         for contract in input_contracts:
             if not self.require_text(repo_root, "project.godot", contract, self.name, details):
+                ok = False
+
+        script_contracts = [
+            (
+                "scripts/main_menu_panel.gd",
+                'smooth_turn_toggle.toggled.connect(func(enabled: bool) -> void: smooth_turn_toggled.emit(enabled))',
+            ),
+        ]
+        for script_path, contract in script_contracts:
+            if not self.require_text(repo_root, script_path, contract, self.name, details):
                 ok = False
 
         summary = "Project scene, script, node, and input contracts are present." if ok else "Project contract verification failed."
