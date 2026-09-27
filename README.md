@@ -49,7 +49,7 @@ branches, releases, and Godot compatibility must be checked before reuse.
 | [Malcolmnixon/godot-xr-tools-demo](https://github.com/Malcolmnixon/godot-xr-tools-demo) | Advanced locomotion recipes | Gliding, low-traction surfaces, wind-assisted movement, and physics climbing. |
 
 The project combines stable, compatible ideas from these references rather than
-copying their projects wholesale. See the [Project Bible](docs/PROJECT_BIBLE.md)
+copying their projects wholesale. See the [Project Bible](Project%20Bible/Project%20Bible.md)
 and [Architecture](docs/ARCHITECTURE.md) for the adopted direction.
 
 ## Planned Mechanics
@@ -64,7 +64,9 @@ and [Architecture](docs/ARCHITECTURE.md) for the adopted direction.
 ## Documentation
 
 - [Documentation index](docs/INDEX.md) - map of project documentation.
-- [Project Bible](docs/PROJECT_BIBLE.md) - product intent and scope.
+- [Project Bible](Project%20Bible/Project%20Bible.md) - durable product intent, boundaries, and governing principles.
+- [Project Handoff Template v1.0](Project%20Bible/Project%20Startup%20Handoff%20Template%20Version%201.0.md) - AI handoff protocol.
+- [Project Handoff Records](Project%20Bible/Handoffs/) - historical handoff records; each handoff is preserved separately.
 - [Architecture](docs/ARCHITECTURE.md) - system boundaries and scene responsibilities.
 - [Validation](docs/VALIDATION.md) - evidence and current validation status.
 - [Test Plan](docs/TEST_PLAN.md) - desktop and Quest 3S test gates.
