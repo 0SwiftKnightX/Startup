@@ -1,4 +1,13 @@
+# Local development tools and caches
 .tools/
 .godot/
+
+# Generated Android export/project output
 android/
+
+# Generated build artifacts (keep the repository guide tracked)
+build/*
+!build/README.md
+
+# Operating-system metadata
 .DS_Store
