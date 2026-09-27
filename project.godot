@@ -126,6 +126,7 @@ shaders/enabled=true
 hand_tracking=true
 
 [physics]
+common/physics_ticks_per_second=90
 common/enable_pause_aware_picking=true
 
 [sentry]
