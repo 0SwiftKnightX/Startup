@@ -1,17 +1,19 @@
 # Locomotion Profiles
 
-Locomotion is organized as composable profiles rather than one large movement
-script. The profiles below are references for future Godot XR Tools integration.
+Locomotion is organized as composable profiles. The current XR player already
+uses Godot XR Tools for physical movement, gravity, direct thumbstick movement,
+and turning; the project-owned script exists only for desktop fallback and comfort
+settings.
 
 ## Profiles
 
-- **Direct movement:** smooth movement with comfort settings.
-- **Snap turn:** discrete rotation with configurable increments.
-- **Teleport:** targeted relocation with valid-surface filtering.
-- **Climbing:** physics-aware handholds and release behavior.
-- **Gliding:** controlled aerial movement and safe landing behavior.
-- **Low traction:** reduced friction for ice-like surfaces.
-- **Wind:** directional forces with bounded player control.
+- **Direct movement:** XR Tools left-stick movement with bounded speed and strafing.
+- **Snap turn:** XR Tools right-stick snap turning with a 30-degree step and debounce.
+- **Teleport:** planned later profile; not part of the current lobby slice.
+- **Climbing:** planned later profile; not part of the current lobby slice.
+- **Gliding:** planned later profile.
+- **Low traction:** planned later profile.
+- **Wind:** planned later profile.
 
 ## Comfort and Performance
 
