@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import importlib.util
 import json
 import sys
@@ -35,10 +36,9 @@ def get_verifier_classes(module):
     classes = []
     for name in dir(module):
         value = getattr(module, name)
-        if isinstance(value, type):
-            if value.__module__ == module.__name__:
-                if name != "BaseVerifier" and name.endswith("Verifier"):
-                    classes.append(value)
+        if isinstance(value, type) and value.__module__ == module.__name__:
+            if name != "BaseVerifier" and name.endswith("Verifier"):
+                classes.append(value)
     return classes
 
 
@@ -51,13 +51,30 @@ def load_manifest() -> set[str]:
         return set()
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Run Startup project verifiers.")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--source-only", action="store_true")
+    mode.add_argument("--runtime-only", action="store_true")
+    return parser.parse_args()
+
+
+def should_run(verifier, args: argparse.Namespace) -> bool:
+    is_runtime = verifier.name.endswith("RuntimeVerifier")
+    if args.source_only:
+        return not is_runtime
+    if args.runtime_only:
+        return is_runtime
+    return True
+
+
 def main() -> int:
+    args = parse_args()
     print("[verify] Starting Startup verification run")
     print(f"[verify] Repository root: {ROOT}")
 
     modules = load_verifier_modules()
     verifier_instances = []
-
     for module in modules:
         for verifier_cls in get_verifier_classes(module):
             verifier_instances.append(verifier_cls())
@@ -74,13 +91,14 @@ def main() -> int:
             print(f"       - Missing discovered verifier: {name}")
         return 1
 
-    if not verifier_instances:
-        print("[verify] No verifier classes found.")
+    selected = [verifier for verifier in verifier_instances if should_run(verifier, args)]
+    if not selected:
+        print("[verify] No verifiers selected.")
         return 1
 
     passed = 0
     failed = 0
-    for verifier in verifier_instances:
+    for verifier in selected:
         result = verifier.run(ROOT)
         if result.ok:
             passed += 1
