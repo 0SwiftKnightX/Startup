@@ -5,6 +5,9 @@ const INTERACTION_LAB_SCENE := "res://scenes/interaction_lab.tscn"
 @onready var menu_surface: XRToolsViewport2DIn3D = $PlayerRig/MenuSurface
 
 func _ready() -> void:
+	# The lobby menu is intentionally a separate UI scene embedded in 3D.
+	# Keep it at a known comfortable distance in both XR and fallback modes.
+	menu_surface.position = Vector3(0.0, 1.55, -2.0)
 	var menu_panel := menu_surface.get_scene_instance()
 	while menu_panel == null:
 		await get_tree().process_frame
@@ -13,9 +16,6 @@ func _ready() -> void:
 	menu_panel.connect("quit_requested", _quit_project)
 	menu_panel.connect("arm_swing_toggled", _on_arm_swing_toggled)
 	menu_panel.connect("smooth_turn_toggled", _on_smooth_turn_toggled)
-	var openxr := XRServer.find_interface("OpenXR") as OpenXRInterface
-	if not openxr or not openxr.is_initialized():
-		menu_surface.position.z = 2.2
 	$PlayerRig/LeftController.button_pressed.connect(_on_menu_controller_button_pressed)
 	$PlayerRig/RightController.button_pressed.connect(_on_menu_controller_button_pressed)
 
