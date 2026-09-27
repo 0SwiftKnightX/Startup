@@ -8,10 +8,10 @@
 ### XR project configuration
 
 - `project.godot` enables Godot OpenXR and XR shaders.
-- The project uses Godot's Mobile renderer, appropriate for standalone Quest XR.
+- The project targets Godot 4.7.2-stable; the Quest runtime observed by the user reports Compatibility/OpenGL ES 3.2 on Adreno 740. The project configuration retains its documented Quest renderer path and the physical runtime result must be treated as device evidence.
 - `openxr_action_map.tres` defines Quest Touch actions for trigger, grip, both thumbsticks, A/X, B/Y, controller poses, and haptics.
-- `scenes/xr_player.tscn` composes one `XROrigin3D`, `XRCamera3D`, left/right `XRController3D`, low-poly tracked hands, `XRToolsPlayerBody`, direct movement, turn, optional arm-swing jog, pickup and pointer functions, and `StartXR`.
-- `scenes/main.tscn` uses an XR Tools world-space viewport menu.
+- `scenes/xr_player.tscn` composes one `XROrigin3D`, `XRCamera3D`, left/right `XRController3D`, low-poly tracked hands, `XRToolsPlayerBody`, gravity/body physics, direct movement, right-stick turn, optional arm-swing jog, pickup, pointer functions, and `StartXR`.
+- `scenes/main.tscn` is now a lit Quest lobby with floor/wall collision, ambient/key/fill lighting, and a separate XR Tools world-space menu surface.
 - The interaction lab includes ranged pickup, a scan area/state machine, a hero state flow, and an aim-gated target with health and feedback.
 
 ### Verified behavior
@@ -37,7 +37,7 @@ These results prove code-level and fallback behavior only. They do not prove hea
 ## OpenXR and Quest Gaps
 
 - This workspace has no active desktop OpenXR runtime or connected headset. Godot reports that OpenXR cannot initialize, then runs the desktop fallback.
-- No physical Quest 3S acceptance test has been performed.
+- An exploratory physical Quest 3S test has now been performed by the user: tracked hands and controller buttons worked, but the lobby/menu was extremely dark or not visible and there was no usable player area. This is evidence of a real device run, not acceptance.
 - Controller tracking, pointer aim, ranged pickup, Grip/Trigger behavior, haptics, arm-swing, and snap/smooth turn still require headset testing.
 - Quest frame timing, thermal behavior, comfort, and Android lifecycle behavior remain unmeasured.
 - The transformed state has no production hero profile or transformed player presentation yet; it is a gameplay-state prototype.
@@ -61,8 +61,8 @@ These results prove code-level and fallback behavior only. They do not prove hea
 
 ## Recommended Next Actions
 
-1. Push the Android workflow Python installation change and confirm a successful APK artifact.
-2. Install the APK on Quest 3S and record boot, tracking, controller, menu, pickup, scan, attack, comfort, and performance results.
-3. Fix any issues found on the device and rerun the verification suite.
+1. Deploy the repaired lobby build to Quest 3S and verify visibility, floor placement, locomotion, turning, menu interaction, pickup, scan, and scene transition.
+2. Push/verify the Android workflow and confirm a successful APK artifact.
+3. Fix any remaining device issues and rerun the verification suite.
 4. Define a small hero profile and visible transform feedback after the current loop is accepted.
 5. Only then begin multiplayer, sandbox, and enemy-wave architecture.
