@@ -146,4 +146,4 @@ Startup may reuse existing code when the applicable license or explicit permissi
 - XR viewport VRS is configured by the XR player startup path when supported.
 - Physics is configured for 90 ticks/second as the starting XR baseline.
 - Android export is ARM64 with Gradle enabled and Quest XR mode enabled.
-- The main scene already provides a lit 3D lobby/floor/wall starting environment; the next environment pass can build on this rather than replacing the XR foundation.
+- The main scene already provides a lit 3D lobby/floor/wall starting environment with a visible procedural sky; the next environment pass can build on this rather than replacing the XR foundation.
