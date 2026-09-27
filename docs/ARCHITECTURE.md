@@ -2,10 +2,11 @@
 
 ## Status
 
-This is the initial architecture direction. It is intentionally lightweight
-until the first Godot project scene and gameplay slice are implemented.
+This is the current architecture direction for the first Quest gameplay slice.
+The project is not being restarted; existing XR Tools and scene contracts are
+being repaired and extended in place.
 
-## Proposed Layers
+## Layers
 
 ### 1. Platform and Runtime
 
@@ -50,12 +51,13 @@ informs specialized locomotion recipes and movement test environments.
 - Separate headless CI from physical XR validation.
 - Keep performance-sensitive allocations and effects visible in profiling.
 
-## Proposed Scene Flow
+## Scene Flow
 
-`Boot -> XR initialization -> Main menu -> Gameplay scene -> Pause/settings`
+`Boot -> XR initialization -> Quest lobby + menu -> Interaction Lab -> Pause/settings`
 
-The first implementation may simplify this flow, but device initialization must
-have a clear failure path when no XR runtime is available.
+The lobby is a real 3D scene; the menu UI remains a separate scene embedded through
+`Viewport2Din3D`. The interaction lab is a separate gameplay scene. Device initialization
+must have a clear failure path when no XR runtime is available.
 
 ## Future Decisions
 
