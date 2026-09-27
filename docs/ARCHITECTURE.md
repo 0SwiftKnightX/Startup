@@ -10,26 +10,23 @@ being repaired and extended in place.
 
 ### 1. Platform and Runtime
 
-Godot, Android export, OpenXR initialization, Quest device configuration, and
-vendor-specific extensions live at the platform boundary.
-
-The [Godot XR Template](https://github.com/GodotVR/godot-xr-template) is the
-initialization and export reference for this layer.
+Godot 4.7.2, Android export, OpenXR initialization, Quest device configuration,
+and vendor-specific extensions live at the platform boundary.
 
 ### 2. XR Foundation
 
 The XR origin, camera, tracked controllers, hand tracking, input actions,
-haptics, locomotion providers, and interaction pointers form the XR foundation.
-Godot XR Tools should provide established mechanics where possible.
+haptics, locomotion providers, gravity/body physics, and interaction pointers
+form the XR foundation.
 
-The [Godot XR Tools repository](https://github.com/GodotVR/godot-xr-tools) is the
-primary API and mechanics reference for this layer.
+Godot XR Tools is the canonical source for common XR mechanics. Project-owned
+scripts should not duplicate XR Tools movement, gravity, or controller behavior.
 
 ### 3. Interaction and Gameplay
 
 Gameplay systems consume stable interaction contracts rather than reaching
 through platform-specific nodes. Grabbable objects, interactable controls,
-climbing surfaces, and UI should expose clear ownership and lifecycle behavior.
+climbing surfaces, and UI expose clear ownership and lifecycle behavior.
 
 ### 4. Presentation
 
@@ -37,29 +34,57 @@ World scenes, spatial UI, audio, effects, comfort options, and feedback are
 presentation concerns. They should not own inventory, progression, or device
 initialization state.
 
-The [Flynn demo](https://github.com/BastiaanOlij/godot-xr-flynn-demo) informs
-larger scene and game-loop organization. The [Malcolm Nixon demo](https://github.com/Malcolmnixon/godot-xr-tools-demo)
-informs specialized locomotion recipes and movement test environments.
-
 ## Boundary Rules
 
 - Keep OpenXR and Quest-specific code at the platform boundary.
 - Prefer Godot XR Tools over duplicating common XR mechanics.
-- Keep gameplay logic testable without requiring a physical headset where
-  possible.
+- Keep gameplay logic testable without requiring a physical headset where possible.
 - Treat input actions as named contracts, not scattered controller checks.
 - Separate headless CI from physical XR validation.
 - Keep performance-sensitive allocations and effects visible in profiling.
+- Keep the canonical XR player in one scene.
+- Keep the lobby/menu UI separate from the lobby world composition.
 
 ## Scene Flow
 
-`Boot -> XR initialization -> Quest lobby + menu -> Interaction Lab -> Pause/settings`
+Boot -> XR initialization -> Quest lobby + menu -> Interaction Lab -> Pause/settings
 
-The lobby is a real 3D scene; the menu UI remains a separate scene embedded through
-`Viewport2Din3D`. The interaction lab is a separate gameplay scene. Device initialization
-must have a clear failure path when no XR runtime is available.
+scenes/main.tscn is the actual 3D lobby. It provides a floor, lighting, a
+simple boundary wall, and the player spawn space. The menu itself remains a
+separate main_menu_panel.tscn UI scene embedded through Viewport2Din3D.
+
+scenes/xr_player.tscn is the canonical XR player and contains:
+
+- XROrigin3D
+- XRCamera3D
+- XRToolsPlayerBody and gravity/ground handling
+- left/right tracked controllers and hands
+- left-stick direct movement
+- right-stick snap/smooth turning
+- pickup and pointer functions
+- optional arm-swing movement
+- OpenXR startup
+
+scenes/interaction_lab.tscn remains a separate gameplay/test scene.
+
+## Locomotion Responsibility
+
+Physical XR locomotion is provided by XR Tools. The project-owned
+comfort_locomotion.gd is only the desktop fallback and comfort-settings bridge.
+
+The intended baseline is:
+
+- gravity: XRToolsPlayerBody/environment physics
+- physical body movement: XRToolsPlayerBody
+- analog movement: left controller primary/thumbstick
+- strafing: left controller secondary axis
+- turning: right controller primary/thumbstick
+- default turning: snap turn
+- optional turning mode: smooth turn
+- optional movement mode: arm-swing/jog
 
 ## Future Decisions
 
-Record significant changes in the audit archive and update this document when a
-decision becomes authoritative.
+Teleportation, climbing, gliding, low-traction movement, wind, multiplayer,
+construction, and enemy waves remain separate systems and should be added only
+after the basic Quest lobby and first interaction loop are stable.
