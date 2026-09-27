@@ -86,3 +86,22 @@ this project uses semantic versioning when releases begin.
 - Android SDK, ADB, and physical Quest 3S deployment remain pending.
 - **Updated:** 2026-09-22T04:00:17Z
 - **Signed:** GitHub Copilot
+
+
+## 2026-09-27 - Startup continuity v1.1 and XR baseline
+
+### Added
+
+- Added Project Handoff Template Version 1.1 with AI self-naming/collision rules, Eastern Time recording, worklog/changelog continuity, and reference/code-reuse provenance.
+- Added `ai/REFERENCE_AND_REUSE_RULES.md`.
+- Added README credits/reference links for the official XR repositories and owner-owned related repositories.
+
+### Changed
+
+- Enabled a 90 Hz physics tick baseline for the Quest XR project.
+- Enabled XR viewport VRS for the Mobile renderer through the canonical XR player startup path.
+
+### Validation
+
+- Changes are statically inspected in GitHub.
+- Godot/Quest runtime validation remains a separate evidence gate and is not claimed by this documentation/configuration change.
