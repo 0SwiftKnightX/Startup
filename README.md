@@ -9,16 +9,17 @@ Quest-first XR development. The repository contains a verified first-slice
 foundation for a Meta Quest 3S experience with boot, menu, interaction-lab, XR
 rig, pickup, scan, hero-state, and arena-target systems. Desktop controls remain
 only a development fallback; the product direction is not desktop-first gameplay.
-The local suite currently passes 12 verifier checks and the Godot project imports;
-OpenXR and physical device validation remain pending because this workspace has
-no active XR runtime or connected Quest.
+The local suite currently passes 12 verifier checks and the Godot project imports.
+An exploratory Quest 3S run has now confirmed tracked hands and controller button
+input, but the lobby/menu presentation and playable scene still require repair.
+Physical Quest acceptance remains open.
 
 ## Target Platform
 
 - **Headset:** Meta Quest 3S
-- **Quest target declaration:** 4.7.1
+- **Quest target declaration:** Godot 4.7.2-stable
 - **XR runtime:** OpenXR
-- **Engine:** Godot 4.7.2-stable (validated locally)
+- **Engine:** Godot 4.7.2-stable (current baseline and validated locally)
 
 The target declaration must be checked against the selected Godot editor and
 plugin versions before implementation begins.
@@ -64,7 +65,7 @@ and [Architecture](docs/ARCHITECTURE.md) for the adopted direction.
 
 - [Documentation index](docs/INDEX.md) - map of project documentation.
 - [Project Bible](docs/PROJECT_BIBLE.md) - product intent and scope.
-- [Architecture](docs/ARCHITECTURE.md) - planned system boundaries.
+- [Architecture](docs/ARCHITECTURE.md) - system boundaries and scene responsibilities.
 - [Validation](docs/VALIDATION.md) - evidence and current validation status.
 - [Test Plan](docs/TEST_PLAN.md) - desktop and Quest 3S test gates.
 - [Audit Archive](docs/AUDIT_ARCHIVE.md) - dated findings and decisions.
@@ -96,8 +97,9 @@ The current Android workflow still needs a successful Actions run before an APK
 artifact is available.
 
 Physical Quest testing is required for tracking, performance, passthrough,
-comfort, and controller behavior. PCVR preview and headless checks do not replace
-device evidence.
+comfort, controller behavior, scene visibility, locomotion, and interaction.
+The first exploratory Quest 3S run confirmed hands and buttons but exposed a dark,
+non-playable lobby; PCVR preview and headless checks do not replace device evidence.
 
 ## Changelog
 

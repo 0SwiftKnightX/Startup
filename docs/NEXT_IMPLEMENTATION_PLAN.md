@@ -2,15 +2,15 @@
 
 ## Current Baseline
 
-Completed and verified:
+Completed and locally verified:
 
 - Godot 4.7.2 project imports and launches headlessly.
-- Main menu opens the interaction lab.
+- Quest lobby scene exists with a separate world-space menu surface; menu flow opens the interaction lab.
 - First-slice architecture is documented.
 - Shared Python verifier runner exists.
 - Five verifiers currently pass.
 - Hero state flow exists: lobby, soul selected, soul scanned, transformed, and arena.
-- Desktop prototype supports raycast targeting, `G` grab/release, `Space` interaction, and `Esc` return.
+- Desktop fallback supports raycast targeting, `G` grab/release, `Space` interaction, and `Esc` return.
 - Godot XR Tools is available and already contains ranged pickup, grip/trigger actions, haptics, and throw velocity sampling.
 
 This baseline is a prototype. It is not yet Quest-validated and does not yet contain a complete XR player rig.
@@ -53,44 +53,46 @@ Acceptance:
 - Removing a required node or action causes a clear failure.
 - Adding a feature without a verifier causes a clear failure once the manifest is enabled.
 
-## Priority 1: XR Player Foundation
+## Priority 1: Quest Lobby and XR Foundation
 
-### 3. Compose the XR player rig
+### 3. Stabilize the Quest lobby and canonical XR player
 
-**Goal:** Replace the temporary camera path with one canonical XR origin.
+**Goal:** Establish one canonical Quest lobby and one canonical XR origin without duplicating XR movement systems.
 
 Tasks:
 
-- Add one `XROrigin3D`.
-- Add `XRCamera3D`.
-- Add left and right `XRController3D` nodes.
+- Keep one `XROrigin3D` in `xr_player.tscn`.
+- Keep `XRCamera3D` under the origin with OpenXR-controlled pose.
+- Keep left and right `XRController3D` nodes.
 - Add controller pose visualization for desktop and XR modes.
-- Keep the desktop camera fallback available when no XR runtime exists.
-- Add a runtime status indicator for XR available, unavailable, or fallback.
+- Keep the desktop camera fallback available only as a development fallback.
+- Verify the lobby floor, lighting, menu visibility, and player start position on Quest.
 
 Acceptance:
 
+- Main scene provides a visible, lit lobby and usable player start area.
 - No scene initializes a second XR origin.
 - Desktop launch remains usable without an OpenXR runtime.
 - Controller poses are available to pointer and interaction systems.
 
-### 4. Define canonical input actions
+### 4. Verify canonical input and locomotion contracts
 
-**Goal:** Make every feature consume named actions instead of raw controller checks.
+**Goal:** Keep every feature on the existing named-action and XR Tools contracts.
 
 Tasks:
 
-- Add left/right movement and turn actions.
-- Add left/right grip and trigger actions.
-- Add confirm/cancel actions for A/X and B/Y context mappings.
-- Configure dead zones and grip/trigger thresholds.
-- Document which actions may overlap and which have priority.
+- Verify left/right movement and turn actions.
+- Verify left/right grip and trigger actions.
+- Verify confirm/cancel actions for A/X and B/Y context mappings.
+- Verify dead zones and grip/trigger thresholds.
+- Verify XRToolsPlayerBody gravity and collision behavior.
+- Verify left-stick direct movement and right-stick snap/smooth turn on Quest.
 
 Acceptance:
 
 - All first-slice systems use action names.
-- No feature reads controller buttons directly outside the input layer.
-- Seated fallback works with thumbstick movement and turning.
+- No feature adds a duplicate custom XR movement/gravity implementation.
+- Physical Quest testing confirms thumbstick movement and turning.
 
 ## Priority 2: Interaction Core
 

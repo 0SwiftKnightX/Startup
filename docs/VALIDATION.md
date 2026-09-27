@@ -10,15 +10,17 @@ and physical Quest testing are different evidence levels.
 
 | Area | Status | Evidence |
 |---|---|---|
-| OpenXR project configuration | Configured, runtime unavailable | `project.godot` enables OpenXR/Mobile and references `openxr_action_map.tres`; this container has no active OpenXR runtime |
 | Godot project import | Passed | Godot 4.7.2-stable headless editor import, 2026-09-27 |
-| Automated verifier suite | Passed | `python3 tools/verify/run_all.py`: 12 passed, 0 failed, 2026-09-27 |
+| Automated verifier suite | Passed | python3 tools/verify/run_all.py: 12 passed, 0 failed, 2026-09-27 |
 | First-slice fallback runtime | Passed | Headless test covers soul selection, scan, transform, off-target rejection, aimed hits, defeat, and reset |
-| Desktop OpenXR preview | Not run | Requires a configured desktop OpenXR runtime and headset |
-| Local Android export | Blocked | `ANDROID_HOME`, `adb`, `sdkmanager`, and Godot Android export templates are absent in this workspace |
-| GitHub Actions APK build | Failed; workflow fix pending | Run `36226832612` imported successfully but failed because `python3` is missing in the container; workflow now installs Python, but that change has not been pushed/retested |
-| Physical Meta Quest 3S acceptance | Not run | Requires successful APK artifact and headset deployment |
-| Release readiness | Not certified | Quest, Android APK, comfort, and performance evidence are incomplete |
+| OpenXR project configuration | Configured | project.godot enables OpenXR and references openxr_action_map.tres |
+| Desktop OpenXR preview | Not run | Desktop OpenXR is a fallback/development surface, not product acceptance |
+| Android export configuration | Configured | ARM64 Android/OpenXR Quest 3S preset exists |
+| GitHub Actions APK build | Needs fresh run | Run 36226832612 failed because the CI image lacked Python; the workflow now installs Python and requires a successful rerun |
+| Local Android export | Blocked in audit workspace | ANDROID_HOME, adb, and sdkmanager are absent in this audit environment |
+| Physical Meta Quest 3S exploratory run | Observed, not accepted | User loaded Startup on Quest 3S; tracked hands and controller buttons worked, but the lobby/menu was extremely dark or not visible and there was no usable player area |
+| Physical Quest 3S acceptance | Open | Locomotion, menu interaction, scene transition, pickup, scan, attack, comfort, frame time, thermal behavior, and lifecycle still require verification |
+| Release readiness | Not certified | Quest acceptance and APK evidence remain incomplete |
 
 ## Required Evidence
 
@@ -37,12 +39,20 @@ Every validation entry should include:
 - A passing headless check does not prove headset tracking or comfort.
 - PCVR behavior does not certify Quest standalone performance.
 - A checklist is not evidence until its steps have been executed.
-- Do not describe the project as Quest-validated until physical Quest 3S testing
-  has passed and been recorded.
+- Do not describe the project as Quest-validated until physical Quest 3S
+  testing has passed and been recorded.
 
-## Next Validation Milestone
+## Current Repair Gate
 
-Push the workflow's Python installation fix and confirm a successful Android
-APK artifact. Then install that APK on Quest 3S and record boot, controller
-tracking, pointer, ranged pickup, scan, transformation, aim-gated attacks,
-comfort, and frame-time evidence here and in the audit archive.
+The next physical validation pass should specifically verify:
+
+1. The lobby is visible and adequately lit.
+2. The player starts on the lobby floor at a usable eye height.
+3. Left-stick movement works and respects collisions.
+4. Right-stick snap turn works; smooth turn can be enabled from the menu.
+5. The world-space menu is visible and pointer/hand interaction works.
+6. Menu launch enters the interaction lab.
+7. The interaction lab floor, lighting, pickup, scan, and target are usable.
+8. Returning to the lobby clears stale gameplay state.
+
+Only after those checks pass should the project move to broader gameplay systems.

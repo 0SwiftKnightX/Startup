@@ -10,47 +10,46 @@ this project uses semantic versioning when releases begin.
 ### Added
 
 - Established Meta Quest 3S as the initial target device.
-- Documented the Godot 4.6+, OpenXR, Godot XR Tools, and OpenXR Vendors stack.
+- Standardized the current engine baseline on Godot 4.7.2-stable.
+- Documented the Godot 4.7.2-stable, OpenXR, Godot XR Tools, and OpenXR Vendors stack.
 - Defined the initial XR mechanics roadmap.
-- Added organized `docs/` documentation for the project bible, architecture,
-	validation, test planning, audit archive, historical GPT records, and active
-	GPT worklog.
-- Added `ai/` governance with shared AI rules and separate Copilot and Gemini
-	worklogs.
-- Reworked the root README into a navigation-first project overview.
-- Added all four approved XR reference repositories with direct links and use
-	cases: the Godot XR Template, Godot XR Tools, the Flynn demo, and the Malcolm
-	Nixon XR Tools demo.
+- Added organized docs/ documentation for the project bible, architecture,
+  validation, test planning, audit archive, historical GPT records, and active
+  GPT worklog.
+- Added ai/ governance with shared AI rules and separate Copilot and Gemini
+  worklogs.
 - Added the initial Godot project foundation with boot, menu, interaction-lab,
   input, and shared game-state files.
 - Added integration blueprint, interaction contracts, locomotion profiles, level
-  flow, and asset-pipeline documentation for combining the reference features.
+  flow, and asset-pipeline documentation.
 - Installed and integrated Godot 4.7.2-stable, XR Tools master, and OpenXR
-	Vendors 5.1.0-stable for local validation.
+  Vendors 5.1.0-stable for local validation.
 - Installed the matching Godot 4.7.2 Android export templates for future Quest
   APK builds.
-- Enabled the OpenXR module and shaders, configured the Mobile renderer, and
-	added a Quest Touch action map for controls, poses, and haptics.
+- Enabled OpenXR and XR shaders and added a Quest Touch action map for controls,
+  poses, and haptics.
 - Added the canonical XR player rig, low-poly tracked hands, world-space XR
-	menu, XR Tools body/movement/pickup/pointer components, and optional arm-swing.
+  menu, XR Tools body/movement/pickup/pointer components, and optional arm-swing.
 - Added scan station feedback, haptics, an aim-gated arena target, and a
-	deterministic fallback end-to-end runtime test.
-- Expanded the shared verification suite to twelve checks, including a negative
-	contract test and CI-compatible Godot executable discovery.
-- Updated the Quest Android workflow to install Python before running project
-	verification.
+  deterministic fallback end-to-end runtime test.
+- Expanded the verification suite to twelve checks.
+- Updated the Quest Android workflow to install Python before project verification.
+- Added a lit 3D Quest lobby around the separate world-space menu.
+- Corrected fallback camera height, fallback controller placement, menu placement,
+  pointer reach, and XR Tools locomotion configuration.
 
 ### Validation and Limitations
 
 - Godot 4.7.2 headless import and the 12-check verifier suite pass locally.
-- The end-to-end desktop fallback loop passes; it does not constitute OpenXR or
-	Quest device validation.
-- The latest observed GitHub Actions run failed because the CI image lacked
-	Python. The workflow fix is local and still requires a push and successful
-	rerun before an APK artifact is available.
-- This workspace lacks a usable OpenXR runtime, Android SDK/ADB, and Android
-	export templates. Quest 3S acceptance, comfort, and performance evidence are
-	still pending.
+- The end-to-end desktop fallback loop passes; it does not constitute Quest device validation.
+- GitHub Actions run 36226832612 failed because the CI image lacked Python; the
+  workflow now installs Python and needs a fresh successful run before an APK artifact
+  can be treated as evidenced.
+- An exploratory Quest 3S run has confirmed tracked hands and controller button input,
+  but the lobby/menu was extremely dark or not visible and there was no usable player
+  area. This exposed the presentation/lobby gap now being repaired.
+- Full Quest acceptance, comfort, performance, APK deployment, and lifecycle evidence
+  remain open.
 
 ## 2026-09-22
 
@@ -69,7 +68,7 @@ this project uses semantic versioning when releases begin.
 ### Godot Foundation
 
 - Added the first staged implementation slice and documented the remaining XR
-	addon and Quest validation gates.
+  addon and Quest validation gates.
 - **Updated:** 2026-09-22T03:50:49Z
 - **Signed:** GitHub Copilot
 
@@ -87,5 +86,3 @@ this project uses semantic versioning when releases begin.
 - Android SDK, ADB, and physical Quest 3S deployment remain pending.
 - **Updated:** 2026-09-22T04:00:17Z
 - **Signed:** GitHub Copilot
-
-[unreleased]: https://github.com/0SwiftKnightX/Startup/compare/HEAD...HEAD
