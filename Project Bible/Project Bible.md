@@ -90,3 +90,14 @@ evidence take precedence over remembered conversational state.
 - Lock the Android/Godot export toolchain after the first successful cloud APK.
 - Define hero profiles and production presentation after the first target loop is accepted.
 - Design multiplayer and sandbox systems only after the single-player Quest slice passes acceptance.
+
+
+## Handoff and Agent Identity Standard
+
+The active handoff protocol is Version 1.1. Version 1.0 remains preserved as historical protocol documentation.
+
+Every AI session assigns itself a working name and project function, checks recent records for name collisions, and uses a numeric collision suffix such as #2 when necessary. An AI must not inherit the identity of a previous signer simply because it received that AI's handoff.
+
+Handoff timestamps record exact UTC time and the owner's America/New_York time with EDT/EST and UTC offset.
+
+Every substantive change must be represented in the active GPT worklog, with CHANGELOG.md updated for durable configuration, structure, dependency, or user-facing changes. Reference/code reuse requires license/permission inspection and provenance recording.
