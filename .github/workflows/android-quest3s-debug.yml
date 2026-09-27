@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
 
@@ -49,19 +49,21 @@ jobs:
           grep -q 'architectures/arm64-v8a=true' export_presets.cfg
           grep -q 'xr_features/xr_mode=1' export_presets.cfg
 
-      - name: Import project
-        run: |
-          godot --headless --path . --editor --quit
-
       - name: Install Python for project verification
         run: |
           apt-get update
           apt-get install -y --no-install-recommends python3
           rm -rf /var/lib/apt/lists/*
 
-      - name: Run project verification
+      # Verify committed source before Godot import. The editor may normalize
+      # project.godot during import, so source-contract checks must run first.
+      - name: Run project source verification
         run: |
           python3 tools/verify/run_all.py
+
+      - name: Import project
+        run: |
+          godot --headless --path . --editor --quit
 
       - name: Build debug APK
         run: |
@@ -75,7 +77,7 @@ jobs:
           ls -lh "${APK_PATH}"
 
       - name: Upload downloadable debug APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Startup-Quest3S-debug
           path: ${{ env.APK_PATH }}
