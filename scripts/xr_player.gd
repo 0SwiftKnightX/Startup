@@ -7,6 +7,10 @@ var runtime_status := "desktop_fallback"
 @onready var camera: XRCamera3D = $XRCamera3D
 
 func _ready() -> void:
+	# Godot 4.7 recommends VRS_XR for Mobile/Forward+ XR renderers.
+	# If the device does not support VRS, Godot ignores this setting.
+	get_viewport().vrs_mode = Viewport.VRS_XR
+
 	var openxr := XRServer.find_interface("OpenXR") as OpenXRInterface
 	if openxr and openxr.is_initialized():
 		runtime_status = "xr_active"
