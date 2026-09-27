@@ -25,7 +25,8 @@ class ProjectContractVerifier(BaseVerifier):
             "scenes/main_menu_panel.tscn": [
                 '[node name="MainMenuPanel" type="Control"]',
                 '[node name="LaunchButton" type="Button" parent="Panel/Content"]',
-                '[node name="QuitButton" type="Button" parent="Panel/Content"]',
+                '[node name="QuitButton" type="Button" parent="Panel/Content"]
+	smooth_turn_toggle.toggled.connect(func(enabled: bool) -> void: smooth_turn_toggled.emit(enabled))',
             ],
             "scenes/interaction_lab.tscn": [
                 '[node name="InteractionLab" type="Node3D"]',
