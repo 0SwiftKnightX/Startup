@@ -100,6 +100,7 @@ this project uses semantic versioning when releases begin.
 
 - Enabled a 90 Hz physics tick baseline for the Quest XR project.
 - Enabled XR viewport VRS for the Mobile renderer through the canonical XR player startup path.
+- Added a visible procedural sky to the existing Quest lobby starting environment so the initial 3D scene has an explicit sky/environment baseline.
 
 ### Validation
 
