@@ -80,7 +80,7 @@ Signed:
 - **Scope:** Establish the next handoff/documentation standard and tighten the Quest 3S starting configuration before the 3D environment build.
 - **Files:** Project Handoff Template v1.1, `ai/REFERENCE_AND_REUSE_RULES.md`, `ai/AI_RULES.md`, `README.md`, `CHANGELOG.md`, `project.godot`, `scripts/xr_player.gd`.
 - **Working identity:** Orion / XR Foundation & Continuity Engineer.
-- **Changes:** Added explicit AI self-naming/collision rules; exact UTC + America/New_York timestamp requirements; mandatory worklog/changelog continuity; code-reuse licensing/provenance rules; reference-repository credits; 90 Hz physics baseline; and Mobile-renderer XR VRS startup configuration.
+- **Changes:** Added explicit AI self-naming/collision rules; exact UTC + America/New_York timestamp requirements; mandatory worklog/changelog continuity; code-reuse licensing/provenance rules; reference-repository credits; 90 Hz physics baseline; Mobile-renderer XR VRS startup configuration; and a visible procedural sky for the Quest lobby starting environment.
 - **Research basis:** Godot 4.7 XR setup documentation and Godot XR Tools setup guidance were compared with the current Startup configuration.
 - **Validation:** Static repository inspection completed. A fresh GitHub Actions/Godot build is required before claiming CI/runtime verification of the new configuration.
 - **Limitations:** Physical Quest 3S validation is not performed by the repository tools in this session.
