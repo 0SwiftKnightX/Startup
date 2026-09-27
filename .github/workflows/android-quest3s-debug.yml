@@ -55,15 +55,20 @@ jobs:
           apt-get install -y --no-install-recommends python3
           rm -rf /var/lib/apt/lists/*
 
-      # Verify committed source before Godot import. The editor may normalize
-      # project.godot during import, so source-contract checks must run first.
+      # Static source checks must run before import because Godot may normalize
+      # project.godot during import.
       - name: Run project source verification
         run: |
-          python3 tools/verify/run_all.py
+          python3 tools/verify/run_all.py --source-only
 
       - name: Import project
         run: |
           godot --headless --path . --editor --quit
+
+      # Runtime checks require Godot's imported project/class state.
+      - name: Run imported-project runtime verification
+        run: |
+          python3 tools/verify/run_all.py --runtime-only
 
       - name: Build debug APK
         run: |
