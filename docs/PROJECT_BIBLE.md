@@ -10,11 +10,12 @@ responsive, and polished experiences for Meta Quest headsets.
 - Primary product target: Meta Quest 3S standalone.
 - Runtime direction: OpenXR on Android.
 - Engine direction: Godot 4.7.2-stable for the current validation baseline.
-- Development phase: XR-first gameplay foundation and Quest validation planning.
+- Development phase: XR-first gameplay foundation, lobby repair, and Quest validation.
 - Desktop behavior: developer fallback only, not a primary game loop.
 
-These are project targets, not claims that the repository is already deployable
-or validated on physical hardware.
+These are project targets. An exploratory Quest 3S run has confirmed hands and
+button input, but scene presentation, locomotion, interaction, and gameplay acceptance
+are not yet complete on the device.
 
 ## Product Principles
 
@@ -26,9 +27,9 @@ or validated on physical hardware.
 
 ## Planned Experience
 
-The current first playable prototype uses a world-space XR menu, tracked low-poly
-hands, thumbstick locomotion/turning, optional arm-swing movement, ranged soul
-pickup, scan, hero-state transition, and a test target. This is a systems slice,
+The current prototype uses a dedicated lobby scene with a separate world-space XR
+menu, tracked low-poly hands, thumbstick locomotion/turning, optional arm-swing
+movement, ranged soul pickup, scan, hero-state transition, and a test target. This is a systems slice,
 not a claim that production gameplay, comfort, or Quest runtime acceptance is
 complete.
 
