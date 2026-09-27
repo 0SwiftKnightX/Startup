@@ -24,10 +24,11 @@ class SetupControllerVerifier(BaseVerifier):
             if not self.require_dir(repo_root, path, self.name, details):
                 ok = False
 
+        # .tools/godot is intentionally ignored because it is a developer-local
+        # tool path, not project source. CI supplies Godot through its container.
         required_files = [
             "project.godot",
             "README.md",
-            ".tools/godot",
         ]
         for path in required_files:
             if not self.require_file(repo_root, path, self.name, details):
@@ -40,7 +41,7 @@ class SetupControllerVerifier(BaseVerifier):
             ok = False
 
         if ok:
-            summary = "Project setup and controller foundations are valid."
+            summary = "Project source setup and controller foundations are valid."
         else:
             summary = "Project setup validation failed."
 

@@ -15,4 +15,3 @@ func _ready() -> void:
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	arm_swing_toggle.toggled.connect(func(enabled: bool) -> void: arm_swing_toggled.emit(enabled))
 	smooth_turn_toggle.toggled.connect(func(enabled: bool) -> void: smooth_turn_toggled.emit(enabled))
-	smooth_turn_toggle.toggled.connect(func(enabled: bool) -> void: smooth_turn_toggled.emit(enabled))

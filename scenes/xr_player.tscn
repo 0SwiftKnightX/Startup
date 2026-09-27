@@ -62,7 +62,7 @@ ranged_distance = 5.0
 
 [node name="Pointer" parent="LeftController" instance=ExtResource("3_pointer")]
 distance = 8.0
-laser_length = 8.0
+laser_length = 1
 show_target = true
 
 [node name="MovementDirect" parent="LeftController" instance=ExtResource("7_direct")]
@@ -85,7 +85,7 @@ ranged_distance = 5.0
 
 [node name="Pointer" parent="RightController" instance=ExtResource("3_pointer")]
 distance = 8.0
-laser_length = 8.0
+laser_length = 1
 show_target = true
 
 [node name="MovementTurn" parent="RightController" instance=ExtResource("8_turn")]
