@@ -1,13 +1,22 @@
-# Local development tools and caches
-.tools/
+# Godot editor/import caches — generated locally, never required as source
 .godot/
 
-# Generated Android export/project output
-android/
+# Local development tools and caches
+.tools/
 
-# Generated build artifacts (keep the repository guide tracked)
+# Android/Gradle generated cache and machine-local files
+android/.gradle/
+android/local.properties
+android/.idea/
+android/build/
+
+# Generated build artifacts — APKs and other outputs stay out of source control
 build/*
 !build/README.md
+
+# Common Android package outputs if produced elsewhere
+*.apk
+*.aab
 
 # Operating-system metadata
 .DS_Store
