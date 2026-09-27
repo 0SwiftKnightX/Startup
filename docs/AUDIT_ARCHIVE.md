@@ -76,3 +76,29 @@ how those facts were established or changed.
 - **Decision or correction:**
 - **Follow-up:**
 - **Signed:**
+
+
+## 2026-09-27 - Godot 4.7.2 Baseline and Quest Lobby Repair
+
+- **Scope:** Reconcile the repository with the current Godot 4.7.2 baseline and
+  repair the first physical Quest 3S presentation/play-space problems without
+  restarting the project.
+- **Environment:** Godot 4.7.2-stable; Quest 3S exploratory run; OpenXR; XR Tools;
+  OpenXR Vendors 5.1.0-stable.
+- **Evidence:** User observed tracked hands and working controller buttons on the
+  Quest 3S, while the previous lobby/menu was extremely dark or not visible and
+  there was no usable player area.
+- **Findings:** The existing main scene contained the XR player and menu surface
+  but no actual lobby floor, lighting, or boundary environment. The fallback
+  camera was positioned for the old scene layout, and the project-owned
+  comfort script correctly served as fallback while XR Tools already provided
+  physical gravity/body movement, direct movement, and turning.
+- **Decision or correction:** Keep the existing Startup foundation. Make
+  main.tscn the 3D Quest lobby, keep main_menu_panel.tscn as a separate UI scene,
+  keep xr_player.tscn as the canonical XR rig, and use XR Tools as the physical
+  locomotion/gravity dependency rather than creating a parallel movement system.
+  Standardize current documentation on Godot 4.7.2-stable.
+- **Follow-up:** Deploy the repaired branch to Quest 3S and verify visibility,
+  floor placement, locomotion, snap/smooth turn, menu interaction, interaction
+  lab transition, pickup, scan, attack, reset, comfort, and performance.
+- **Signed:** ChatGPT
