@@ -30,6 +30,18 @@ jobs:
         with:
           lfs: true
 
+      # Static source checks must run before any Godot command because Godot
+      # can normalize project.godot during editor startup/import.
+      - name: Install Python for project verification
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3
+          rm -rf /var/lib/apt/lists/*
+
+      - name: Run project source verification
+        run: |
+          python3 tools/verify/run_all.py --source-only
+
       - name: Verify Godot and Android toolchain
         run: |
           godot --version
@@ -40,6 +52,7 @@ jobs:
           adb version
           which sdkmanager || true
           sdkmanager --version || true
+
       # The godot-ci image stores its Android editor settings and export
       # templates under /root. GitHub Actions runs the container with a
       # different HOME, so expose the image's known-good Android setup.
@@ -58,18 +71,6 @@ jobs:
           grep -q 'platform="Android"' export_presets.cfg
           grep -q 'architectures/arm64-v8a=true' export_presets.cfg
           grep -q 'xr_features/xr_mode=1' export_presets.cfg
-
-      - name: Install Python for project verification
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends python3
-          rm -rf /var/lib/apt/lists/*
-
-      # Static source checks must run before import because Godot may normalize
-      # project.godot during import.
-      - name: Run project source verification
-        run: |
-          python3 tools/verify/run_all.py --source-only
 
       - name: Import project
         run: |
