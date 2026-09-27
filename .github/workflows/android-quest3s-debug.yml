@@ -46,12 +46,12 @@ jobs:
         run: |
           godot --version
           java -version
-          echo "ANDROID_HOME=${ANDROID_HOME:-unset}"
-          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-unset}"
-          which adb || true
-          adb version
-          which sdkmanager || true
-          sdkmanager --version || true
+          echo "ANDROID_HOME=\${ANDROID_HOME:-unset}"
+          echo "ANDROID_SDK_ROOT=\${ANDROID_SDK_ROOT:-unset}"
+          test -x "\${ANDROID_HOME}/platform-tools/adb"
+          "\${ANDROID_HOME}/platform-tools/adb" version
+          test -x "\${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager"
+          "\${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager" --version
 
       # The godot-ci image stores its Android editor settings and export
       # templates under /root. GitHub Actions runs the container with a
@@ -62,15 +62,6 @@ jobs:
           cp -a /root/.config/godot/. ~/.config/godot/
           mkdir -p ~/.local/share/godot/export_templates
           cp -a /root/.local/share/godot/export_templates/. ~/.local/share/godot/export_templates/
-
-      # Sentry's Android integration requires Godot's Gradle project template.
-      # Install it after the project is present so the template is generated
-      # inside this checkout and is available to --export-debug.
-      - name: Install Android Gradle build template
-        run: |
-          godot --headless --path . --editor --quit --install-android-build-template
-          test -f android/build.gradle
-          test -f android/gradlew
 
       - name: Verify Android export preset
         run: |
@@ -90,21 +81,32 @@ jobs:
         run: |
           python3 tools/verify/run_all.py --runtime-only
 
-      - name: Build debug APK
+      # Godot's documented CLI contract is to install the Android Gradle
+      # build template in conjunction with the actual Android export.
+      # Keeping the install attached to export avoids a separate editor-start
+      # path that can probe ADB and fail when no device daemon is running.
+      - name: Build debug APK with Android Gradle template
         run: |
           mkdir -p build
-          godot --headless --path . --export-debug "${EXPORT_PRESET}" "${APK_PATH}"
+          godot --headless --path . --export-debug "\${EXPORT_PRESET}" "\${APK_PATH}" --install-android-build-template
+
+      - name: Verify Android Gradle project
+        run: |
+          test -f android/build.gradle
+          test -f android/gradlew
+          test -f android/.build_version
+          grep -q '4.7.2' android/.build_version
 
       - name: Verify APK artifact
         run: |
-          test -s "${APK_PATH}"
-          file "${APK_PATH}"
-          ls -lh "${APK_PATH}"
+          test -s "\${APK_PATH}"
+          file "\${APK_PATH}"
+          ls -lh "\${APK_PATH}"
 
       - name: Upload downloadable debug APK
         uses: actions/upload-artifact@v6
         with:
           name: Startup-Quest3S-debug
-          path: ${{ env.APK_PATH }}
+          path: \${{ env.APK_PATH }}
           if-no-files-found: error
           retention-days: 14
