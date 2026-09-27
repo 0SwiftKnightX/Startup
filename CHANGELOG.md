@@ -10,7 +10,7 @@ this project uses semantic versioning when releases begin.
 ### Added
 
 - Established Meta Quest 3S as the initial target device.
-- Documented the Godot 4.6+, OpenXR, Godot XR Tools, and OpenXR Vendors stack.
+- Documented the Godot 4.7.2-stable, OpenXR, Godot XR Tools, and OpenXR Vendors stack.
 - Defined the initial XR mechanics roadmap.
 - Added organized `docs/` documentation for the project bible, architecture,
 	validation, test planning, audit archive, historical GPT records, and active
@@ -29,7 +29,7 @@ this project uses semantic versioning when releases begin.
 	Vendors 5.1.0-stable for local validation.
 - Installed the matching Godot 4.7.2 Android export templates for future Quest
   APK builds.
-- Enabled the OpenXR module and shaders, configured the Mobile renderer, and
+- Enabled the OpenXR module and shaders, configured the Quest renderer path, and
 	added a Quest Touch action map for controls, poses, and haptics.
 - Added the canonical XR player rig, low-poly tracked hands, world-space XR
 	menu, XR Tools body/movement/pickup/pointer components, and optional arm-swing.
