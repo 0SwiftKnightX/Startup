@@ -14,8 +14,10 @@ class ProjectContractVerifier(BaseVerifier):
 
         scene_contracts = {
             "scenes/main.tscn": [
-                '[node name="StartupXR" type="Node"]',
+                '[node name="StartupXR" type="Node3D"]',
                 'script = ExtResource("1_main")',
+                '[node name="LobbyEnvironment" type="WorldEnvironment" parent="."]',
+                '[node name="Floor" type="StaticBody3D" parent="."]',
                 '[node name="PlayerRig" parent="." instance=ExtResource("2_player")]',
                 '[node name="MenuSurface" parent="PlayerRig" instance=ExtResource("3_viewport")]',
                 'scene = ExtResource("4_menu")',
