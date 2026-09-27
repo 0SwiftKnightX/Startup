@@ -1,0 +1,603 @@
+# Startup AI Conversation Log
+
+## Repository
+0SwiftKnightX/Startup
+
+## Requested Log Location
+Startup Logs/AI logs/Conversation Logs/
+
+## Purpose
+This document preserves the available conversation history, project context, user directives, research conclusions, implementation decisions, and current CI workflow for continuity between AI agents.
+
+---
+
+# 1. Current User Request
+
+The user requested:
+1. Show the complete current Android Quest 3S CI workflow code directly in the conversation.
+2. Create a text document containing everything available from this conversation history.
+3. Store that conversation log inside Startup under:
+Startup Logs/AI logs/Conversation Logs/
+
+The user wants the repository itself to retain the conversation record for continuity.
+
+---
+
+# 2. Current Project Context
+
+The Startup repository is a governance/runtime foundation for the user's Quest 3S-first XR development work.
+
+Target hardware: Meta Quest 3S.
+Engine: Godot.
+XR stack: OpenXR.
+Target platform: standalone Android/Quest.
+The user wants to minimize dependence on a powerful PC.
+
+The user prefers:
+- Direct implementation when explicitly authorized.
+- GitHub as the source of truth.
+- Exact verification instead of assumed completion.
+- No fabricated success.
+- No weakening verifiers merely to make CI green.
+- Fixing the actual failure point.
+- Clear checklists.
+- Continuing directly on main when explicitly requested instead of opening unnecessary PRs.
+
+---
+
+# 3. Main-Branch Direction
+
+PR #3 was merged by the user.
+
+After PR #3 was merged, the user explicitly requested that subsequent fixes be made directly on main instead of creating another pull request.
+
+The current source of truth is therefore main.
+
+---
+
+# 4. CI Research Request
+
+The user provided this workflow job:
+
+https://github.com/0SwiftKnightX/Startup/actions/runs/36321222653/job/108625305339
+
+The user requested deep research into every checklist stage so that each stage uses the correct implementation instead of relying on trial-and-error.
+
+The desired method is:
+- Research what each stage actually requires.
+- Implement the correct procedure.
+- Verify each prerequisite explicitly.
+- Avoid discovering missing dependencies one at a time during the final export.
+
+---
+
+# 5. Earlier Failure Chain
+
+## Source verification ordering
+Godot can normalize project settings during editor startup/import. Static source verification therefore needs to happen before Godot import.
+
+## Runtime renderer normalization
+An earlier runtime verifier expected a mobile renderer setting in a non-canonical form. Godot normalized it to its canonical representation. The verifier was corrected to accept the canonical representation while still requiring the mobile renderer.
+
+## Android export environment
+Earlier export failures included:
+- libfontconfig.so.1 missing.
+- Android export template missing from the active HOME.
+- Java SDK path/environment problems.
+- Sentry requiring Gradle Android export.
+
+The resulting fixes included:
+- Enable Gradle Android export.
+- Copy the known-good Godot configuration from the godot-ci image into the actual GitHub Actions HOME.
+- Copy Godot export templates into the active HOME.
+- Make Java and Android SDK locations explicit.
+- Run source verification before Godot normalization.
+
+## Android Gradle template
+An earlier run reported:
+Android build template not installed in the project.
+
+A separate installation invocation was then added, but that invocation produced:
+cannot connect to daemon at tcp:5037: Connection refused
+
+The current design attaches --install-android-build-template to the actual Android export command.
+
+---
+
+# 6. Research Areas
+
+Deep research covered:
+- Godot 4.7.2 Android export.
+- Godot Android Gradle build templates.
+- Godot Linux runtime dependencies.
+- Android SDK requirements.
+- Java 17.
+- Android build tools/platforms/CMake/NDK.
+- GitHub Actions container jobs.
+- GitHub Actions checkout/artifact actions.
+- Python in container jobs.
+- barichello/godot-ci.
+- Static repository verification.
+- Runtime verification.
+- APK structural validation.
+
+The objective was to make every stage a real gate with explicit prerequisites.
+
+---
+
+# 7. Toolchain
+
+Godot: 4.7.2-stable
+Container: barichello/godot-ci:4.7.2
+Runner: ubuntu-24.04
+Java: OpenJDK 17
+ANDROID_HOME: /usr/lib/android-sdk
+ANDROID_SDK_ROOT: /usr/lib/android-sdk
+JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+
+Android components explicitly prepared/verified:
+- platform-tools
+- build-tools;35.0.1
+- platforms;android-35
+- cmdline-tools;latest
+- cmake;3.10.2.4988404
+- ndk;28.1.13356709
+
+---
+
+# 8. CI Architecture
+
+The pipeline is designed as:
+
+checkout
+→ source verification
+→ Linux runtime dependencies
+→ Android SDK
+→ Godot settings/templates
+→ toolchain verification
+→ export preset verification
+→ Godot import
+→ runtime verification
+→ Android Gradle export
+→ Gradle project verification
+→ APK structural verification
+→ artifact upload
+
+Each stage establishes prerequisites for the next.
+
+---
+
+# 9. Python Stage
+
+The repository uses Python verification at:
+
+tools/verify/run_all.py
+
+The workflow installs Python 3 and checks its version before running verification.
+
+It verifies Python is at least 3.9.
+
+Command:
+
+python3 tools/verify/run_all.py --source-only
+
+---
+
+# 10. Linux Runtime Dependencies
+
+The Godot editor binary requires Linux runtime libraries.
+
+The workflow explicitly installs:
+- libfontconfig1
+- libdbus-1-3
+
+It runs ldconfig and checks:
+- /usr/lib/x86_64-linux-gnu/libfontconfig.so.1
+- /usr/lib/x86_64-linux-gnu/libdbus-1.so.3
+
+This turns previously hidden runtime requirements into explicit prerequisites.
+
+---
+
+# 11. Android SDK Stage
+
+The workflow verifies sdkmanager exists and uses it to accept licenses and install required components.
+
+It checks:
+- adb executable.
+- sdkmanager executable.
+- build-tools/35.0.1.
+- platforms/android-35.
+- cmake/3.10.2.4988404.
+- ndk/28.1.13356709.
+
+---
+
+# 12. Godot Android Environment
+
+The godot-ci image stores known-good settings/templates under /root.
+
+The workflow copies:
+ /root/.config/godot/
+to:
+ $HOME/.config/godot/
+
+and:
+ /root/.local/share/godot/export_templates/
+to:
+ $HOME/.local/share/godot/export_templates/
+
+It verifies the 4.7.2 templates and configured Java/Android SDK paths.
+
+---
+
+# 13. Toolchain Verification
+
+The workflow verifies:
+- Godot executable.
+- Java executable.
+- adb executable.
+- sdkmanager executable.
+- Godot version.
+- Java version.
+- adb version.
+- sdkmanager version.
+- required SDK directories.
+
+This is stronger than merely printing environment variables.
+
+---
+
+# 14. Export Preset
+
+The workflow checks export_presets.cfg for:
+- name="Android Quest 3S"
+- platform="Android"
+- architectures/arm64-v8a=true
+- xr_features/xr_mode=1
+- gradle_build/use_gradle_build=true
+
+The preset uses package:
+com.swiftknightx.startup
+
+The debug APK path is:
+build/Startup-Quest3S-debug.apk
+
+---
+
+# 15. Godot Import
+
+After static verification and environment preparation:
+
+godot --headless --path . --editor --quit
+
+This is the authoritative Godot parsing/import stage.
+
+---
+
+# 16. Runtime Verification
+
+After import:
+
+python3 tools/verify/run_all.py --runtime-only
+
+Previously verified runtime checks included:
+- FirstSliceRuntimeVerifier
+- HeroStateRuntimeVerifier
+- ScanStationRuntimeVerifier
+- XRRuntimeVerifier
+
+The verifier architecture intentionally separates source contracts from imported/runtime contracts.
+
+---
+
+# 17. Android Gradle Export
+
+The current export uses:
+
+godot --headless --path . --export-debug "Android Quest 3S" "build/Startup-Quest3S-debug.apk" --install-android-build-template
+
+The template installation is attached to the real export operation to avoid the separate editor-start path that previously attempted to contact ADB.
+
+---
+
+# 18. Gradle Project Verification
+
+After export, the workflow checks:
+- android/
+- android/build/
+- android/build.gradle
+- android/gradlew
+- android/.build_version
+- android/gradlew executable
+- Godot 4.7.2 build version
+
+It also runs:
+
+./android/gradlew --version
+
+---
+
+# 19. APK Verification
+
+The workflow checks:
+- APK exists.
+- APK is non-empty.
+- APK is a valid ZIP archive.
+- AndroidManifest.xml exists.
+- classes.dex exists.
+
+This prevents an empty or malformed output from being considered a successful APK build.
+
+---
+
+# 20. Artifact Upload
+
+The workflow uploads:
+Startup-Quest3S-debug
+
+using actions/upload-artifact@v7.
+
+Path:
+build/Startup-Quest3S-debug.apk
+
+Missing-file behavior:
+if-no-files-found: error
+
+---
+
+# 21. Implemented Commit
+
+Commit:
+32a9ce14dfa10ee62b872e33ece3822cb28479a9
+
+Message:
+Harden every Android CI stage against current toolchain requirements
+
+Commit URL:
+https://github.com/0SwiftKnightX/Startup/commit/32a9ce14dfa10ee62b872e33ece3822cb28479a9
+
+---
+
+# 22. Current Full Workflow
+
+File:
+.github/workflows/android-quest3s-debug.yml
+
+The complete current contents retrieved from main follow:
+
+name: Android Quest 3S Debug APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: "4.7.2-stable"
+  EXPORT_PRESET: "Android Quest 3S"
+  APK_PATH: "build/Startup-Quest3S-debug.apk"
+  ANDROID_HOME: "/usr/lib/android-sdk"
+  ANDROID_SDK_ROOT: "/usr/lib/android-sdk"
+  JAVA_HOME: "/usr/lib/jvm/java-17-openjdk-amd64"
+
+jobs:
+  build-android:
+    name: Build Quest 3S Debug APK
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.7.2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          lfs: true
+
+      # Static source checks must run before any Godot command because Godot
+      # can normalize project.godot during editor startup/import.
+      - name: Install Python for project verification
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3
+          python3 --version
+          python3 -c 'import sys; assert sys.version_info >= (3, 9), sys.version'
+          rm -rf /var/lib/apt/lists/*
+
+      - name: Run project source verification
+        run: |
+          python3 tools/verify/run_all.py --source-only
+
+      # The published godot-ci image does not include every runtime library
+      # required by the Godot Linux editor binary. Install the host runtime
+      # libraries before invoking Godot so --version/import/export are real
+      # executable checks rather than partial launches.
+      - name: Install Godot Linux runtime dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends             libfontconfig1             libdbus-1-3
+          ldconfig
+          test -e /usr/lib/x86_64-linux-gnu/libfontconfig.so.1
+          test -e /usr/lib/x86_64-linux-gnu/libdbus-1.so.3
+          rm -rf /var/lib/apt/lists/*
+
+      # Godot 4.7 documents these Android SDK components for Linux exports:
+      # platform-tools >= 35, build-tools 35.0.1, platform 35, latest command
+      # line tools, CMake 3.10.2.4988404, and NDK 28.1.13356709 (r28b).
+      - name: Prepare Android SDK for Godot 4.7
+        run: |
+          test -x "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager"
+          yes | "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager" --sdk_root="${ANDROID_HOME}" --licenses
+          "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager" --sdk_root="${ANDROID_HOME}"             "platform-tools"             "build-tools;35.0.1"             "platforms;android-35"             "cmdline-tools;latest"             "cmake;3.10.2.4988404"             "ndk;28.1.13356709"
+          test -x "${ANDROID_HOME}/platform-tools/adb"
+          test -x "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager"
+          test -d "${ANDROID_HOME}/build-tools/35.0.1"
+          test -d "${ANDROID_HOME}/platforms/android-35"
+          test -d "${ANDROID_HOME}/cmake/3.10.2.4988404"
+          test -d "${ANDROID_HOME}/ndk/28.1.13356709"
+
+      # The godot-ci image stores its Android editor settings and export
+      # templates under /root. GitHub Actions runs the container with a
+      # different HOME, so expose the image's known-good Godot settings and
+      # export templates to the actual workflow HOME.
+      - name: Configure Godot Android export environment
+        run: |
+          mkdir -p "${HOME}/.config/godot" "${HOME}/.local/share/godot/export_templates"
+          cp -a /root/.config/godot/. "${HOME}/.config/godot/"
+          cp -a /root/.local/share/godot/export_templates/. "${HOME}/.local/share/godot/export_templates/"
+          test -f "${HOME}/.config/godot/editor_settings-4.7.tres"
+          test -d "${HOME}/.local/share/godot/export_templates/4.7.2.stable"
+          grep -q 'export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"'             "${HOME}/.config/godot/editor_settings-4.7.tres"
+          grep -q 'export/android/android_sdk_path = "/usr/lib/android-sdk"'             "${HOME}/.config/godot/editor_settings-4.7.tres"
+
+      # Validate the actual binaries, paths, and versions used by the export.
+      # Do not escape shell variables: these must expand inside the container.
+      - name: Verify Godot and Android toolchain
+        run: |
+          set -eu
+          test -x /usr/local/bin/godot
+          test -x "${JAVA_HOME}/bin/java"
+          test -x "${ANDROID_HOME}/platform-tools/adb"
+          test -x "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager"
+          godot --version
+          java -version
+          "${ANDROID_HOME}/platform-tools/adb" version
+          "${ANDROID_HOME}/cmdline-tools/cmdline-tools/bin/sdkmanager" --version
+          test -d "${ANDROID_HOME}/build-tools/35.0.1"
+          test -d "${ANDROID_HOME}/platforms/android-35"
+          test -d "${ANDROID_HOME}/cmake/3.10.2.4988404"
+          test -d "${ANDROID_HOME}/ndk/28.1.13356709"
+
+      - name: Verify Android export preset
+        run: |
+          test -f export_presets.cfg
+          grep -q 'name="Android Quest 3S"' export_presets.cfg
+          grep -q 'platform="Android"' export_presets.cfg
+          grep -q 'architectures/arm64-v8a=true' export_presets.cfg
+          grep -q 'xr_features/xr_mode=1' export_presets.cfg
+          grep -q 'gradle_build/use_gradle_build=true' export_presets.cfg
+
+      - name: Import project
+        run: |
+          godot --headless --path . --editor --quit
+
+      # Runtime checks require Godot's imported project/class state.
+      - name: Run imported-project runtime verification
+        run: |
+          python3 tools/verify/run_all.py --runtime-only
+
+      # Godot 4.7 documents --install-android-build-template as an editor
+      # option used in conjunction with --export-debug/--export-release.
+      # Keeping it on the export command avoids a separate editor-start path
+      # that can probe ADB when no device daemon exists in CI.
+      - name: Build debug APK with Android Gradle template
+        run: |
+          mkdir -p build
+          godot --headless --path .             --export-debug "${EXPORT_PRESET}" "${APK_PATH}"             --install-android-build-template
+
+      # A Gradle build must leave a complete project in res://android before
+      # the APK is considered valid.
+      - name: Verify Android Gradle project
+        run: |
+          test -d android
+          test -d android/build
+          test -f android/build.gradle
+          test -f android/gradlew
+          test -x android/gradlew
+          test -f android/.build_version
+          grep -q '4.7.2' android/.build_version
+          ./android/gradlew --version
+
+      # Verify both the APK container and its basic Android package structure.
+      - name: Verify APK artifact
+        run: |
+          test -s "${APK_PATH}"
+          file "${APK_PATH}"
+          unzip -t "${APK_PATH}" >/dev/null
+          unzip -l "${APK_PATH}" | grep -q 'AndroidManifest.xml'
+          unzip -l "${APK_PATH}" | grep -q 'classes.dex'
+          ls -lh "${APK_PATH}"
+
+      - name: Upload downloadable debug APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: Startup-Quest3S-debug
+          path: ${{ env.APK_PATH }}
+          if-no-files-found: error
+          retention-days: 14
+
+
+---
+
+# 23. Validation Philosophy
+
+The objective is not merely a green Actions badge.
+
+Each gate proves the prerequisites required by the next gate.
+
+Source verification establishes repository contracts.
+
+Godot import establishes that Godot can parse/import the project.
+
+Runtime verification establishes that the imported project satisfies runtime contracts.
+
+Android toolchain verification establishes that Java, Android SDK, CMake, and NDK are available.
+
+Gradle export establishes that the Android project can actually be generated/built.
+
+APK verification establishes that a real package was produced and has basic Android package structure.
+
+Artifact upload establishes that the resulting APK is retained by GitHub Actions.
+
+Build-environment errors should be fixed in the workflow/environment rather than by weakening verifiers.
+
+---
+
+# 24. User's Explicit Working Rules
+
+The user has emphasized:
+- Do not claim something works without evidence.
+- Do not create unnecessary PRs after direct implementation has been authorized.
+- Do not weaken tests/verifiers to make CI pass.
+- Research correct implementations before repeatedly changing one thing at a time.
+- Treat GitHub as the source of truth.
+- Preserve project continuity for future AI agents.
+- Use direct checklists.
+- Keep Quest 3S as the primary target.
+- Avoid unnecessary PC-dependent workflows.
+- Fix the actual problem rather than adding unrelated scope.
+
+---
+
+# 25. Continuity Procedure
+
+Before modifying Startup in a future session:
+
+1. Read this conversation log.
+2. Read README and relevant repository documentation.
+3. Inspect the current workflow on main.
+4. Inspect the latest GitHub Actions run.
+5. Identify the first actual failing stage.
+6. Research that stage against current authoritative documentation.
+7. Implement the smallest correct fix.
+8. Validate it.
+9. Do not fabricate success.
+10. Record significant changes in the repository's logging/documentation structure.
+
+---
+
+# 26. Requested Log Hierarchy
+
+Startup Logs/
+└── AI logs/
+    └── Conversation Logs/
+
+This file belongs in the Conversation Logs directory.
+
