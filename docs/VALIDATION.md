@@ -15,9 +15,9 @@ and physical Quest testing are different evidence levels.
 | Automated verifier suite | Passed | `python3 tools/verify/run_all.py`: 12 passed, 0 failed, 2026-09-27 |
 | First-slice fallback runtime | Passed | Headless test covers soul selection, scan, transform, off-target rejection, aimed hits, defeat, and reset |
 | Desktop OpenXR preview | Not run | Requires a configured desktop OpenXR runtime and headset |
-| Local Android export | Blocked | `ANDROID_HOME`, `adb`, `sdkmanager`, and Godot Android export templates are absent in this workspace |
-| GitHub Actions APK build | Failed; workflow fix pending | Run `36226832612` imported successfully but failed because `python3` is missing in the container; workflow now installs Python, but that change has not been pushed/retested |
-| Physical Meta Quest 3S acceptance | Not run | Requires successful APK artifact and headset deployment |
+| Local Android export | Blocked in audit workspace | `ANDROID_HOME`, `adb`, and `sdkmanager` are absent in this audit environment; repository export configuration is present. |
+| GitHub Actions APK build | Needs fresh run | Run `36226832612` failed because `python3` was missing; the workflow now installs Python and requires a fresh successful run. |
+| Physical Meta Quest 3S acceptance | Exploratory only | User-reported Quest 3S run: tracked hands and controller buttons worked; lobby/menu was too dark/not visible and there was no usable player area. Full acceptance remains open. |
 | Release readiness | Not certified | Quest, Android APK, comfort, and performance evidence are incomplete |
 
 ## Required Evidence
