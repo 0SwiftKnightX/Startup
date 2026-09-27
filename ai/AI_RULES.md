@@ -43,3 +43,22 @@ GitHub Copilot, Gemini, and any other automated coding agent.
 An agent must sign worklog or audit entries with its actual tool identity. Do not
 invent a human identity, claim another agent's work, or imply physical testing
 was performed by the agent.
+
+
+## Agent Working Identity
+
+- Every AI entering Startup assigns itself a working name before substantive work.
+- The AI must not inherit or impersonate the signer of the handoff it reads.
+- Check recent handoffs/worklogs for collisions before signing.
+- If the chosen name already exists, use a distinct suffix such as #2 or #3.
+- Record the working name and project function in worklogs, audits, and handoffs.
+- Record exact UTC time plus America/New_York Eastern Time with EDT/EST and UTC offset.
+
+## Reference and Code Reuse
+
+- Public visibility is not automatic permission to copy code or assets.
+- Inspect the source license and any path-specific notices before reuse.
+- Preserve required copyright/license/attribution notices.
+- Record source, path, commit/release, license, and reused scope when material is actually copied.
+- If licensing or permission is unclear, do not copy the material.
+- Prefer proven compatible implementations when legally reusable, rather than unnecessary reinvention.
