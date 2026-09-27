@@ -24,6 +24,7 @@ class XRPlayerVerifier(BaseVerifier):
             '[node name="Pointer" parent="LeftController" instance=ExtResource("3_pointer")]',
             '[node name="Pointer" parent="RightController" instance=ExtResource("3_pointer")]',
             "distance = 8.0",
+            "laser_length = 1",
             "show_target = true",
             'tracker = &"left_hand"',
             'tracker = &"right_hand"',
@@ -32,6 +33,7 @@ class XRPlayerVerifier(BaseVerifier):
             'ranged_enable = true',
             'ranged_distance = 5.0',
             'res://addons/godot-xr-tools/xr/start_xr.tscn',
+            "ground_control = 0",
             'res://scripts/comfort_locomotion.gd',
         ]
         for contract in contracts:
