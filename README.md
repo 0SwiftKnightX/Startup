@@ -65,7 +65,7 @@ and [Architecture](docs/ARCHITECTURE.md) for the adopted direction.
 
 - [Documentation index](docs/INDEX.md) - map of project documentation.
 - [Project Bible](Project%20Bible/Project%20Bible.md) - durable product intent, boundaries, and governing principles.
-- [Project Handoff Template v1.0](Project%20Bible/Project%20Startup%20Handoff%20Template%20Version%201.0.md) - AI handoff protocol.
+- [Project Handoff Template v1.1](Project%20Bible/Project%20Startup%20Handoff%20Template%20Version%201.1.md) - active AI handoff protocol; Version 1.0 remains preserved.
 - [Project Handoff Records](Project%20Bible/Handoffs/) - historical handoff records; each handoff is preserved separately.
 - [Architecture](docs/ARCHITECTURE.md) - system boundaries and scene responsibilities.
 - [Validation](docs/VALIDATION.md) - evidence and current validation status.
@@ -112,3 +112,38 @@ changes.
 
 - **Updated:** 2026-09-27T06:00:29Z
 - **Signed:** GitHub Copilot
+
+
+## Credits and Reference Repositories
+
+These repositories and projects informed Startup's architecture, implementation research, continuity work, and XR development. A reference link does not by itself mean code was copied.
+
+### Official XR references
+
+- [GodotVR/godot-xr-template](https://github.com/GodotVR/godot-xr-template) — initialization, Android/Quest export structure, vendor loaders, menu structure, and locomotion configuration.
+- [GodotVR/godot-xr-tools](https://github.com/GodotVR/godot-xr-tools) — XR interaction, physics hands, grabbing, UI interaction, locomotion, haptics, and reference scenes.
+- [BastiaanOlij/godot-xr-flynn-demo](https://github.com/BastiaanOlij/godot-xr-flynn-demo) — multi-level and performance-aware architecture reference.
+- [Malcolmnixon/godot-xr-tools-demo](https://github.com/Malcolmnixon/godot-xr-tools-demo) — locomotion and traversal reference.
+
+### Owner-owned related repositories
+
+- [0SwiftKnightX/XrGpt](https://github.com/0SwiftKnightX/XrGpt) — XR foundation and systems research reference. It remains a separate repository.
+- [0SwiftKnightX/ProjectMythos](https://github.com/0SwiftKnightX/ProjectMythos) — prior Godot vehicle/blueprint prototype reference.
+- [0SwiftKnightX/Personal-quest-development-](https://github.com/0SwiftKnightX/Personal-quest-development-) — XR composition/reference project.
+
+### Reuse rule
+
+Startup may reuse existing code when the applicable license or explicit permission allows the intended use. AI agents must inspect licensing, preserve required notices, and record provenance before copying material. See [Reference and Code Reuse Rules](ai/REFERENCE_AND_REUSE_RULES.md).
+
+## Starting Project Baseline
+
+- Meta Quest 3S standalone is the primary target.
+- Godot 4.7.2-stable is the current baseline.
+- OpenXR is enabled with the tracked action map.
+- Godot XR Tools current master is the XR interaction foundation.
+- OpenXR Vendors 5.1.0-stable is present for vendor extensions.
+- Mobile renderer is the intended Quest renderer.
+- XR viewport VRS is configured by the XR player startup path when supported.
+- Physics is configured for 90 ticks/second as the starting XR baseline.
+- Android export is ARM64 with Gradle enabled and Quest XR mode enabled.
+- The main scene already provides a lit 3D lobby/floor/wall starting environment; the next environment pass can build on this rather than replacing the XR foundation.
