@@ -40,6 +40,16 @@ jobs:
           adb version
           which sdkmanager || true
           sdkmanager --version || true
+      # The godot-ci image stores its Android editor settings and export
+      # templates under /root. GitHub Actions runs the container with a
+      # different HOME, so expose the image's known-good Android setup.
+      - name: Configure Godot Android export environment
+        run: |
+          mkdir -p ~/.config ~/.local/share/godot
+          cp -a /root/.config/godot/. ~/.config/godot/
+          mkdir -p ~/.local/share/godot/export_templates
+          cp -a /root/.local/share/godot/export_templates/. ~/.local/share/godot/export_templates/
+          godot --headless --path . --editor --quit --install-android-build-template
 
       - name: Verify Android export preset
         run: |
